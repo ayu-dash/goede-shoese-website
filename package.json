@@ -1,0 +1,29 @@
+{
+  "name": "goede-shoese-website",
+  "version": "1.0.0",
+  "description": "website goede shoes",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayu-dash/goede-shoese-website.git"
+  },
+  "author": "ayu-dash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ayu-dash/goede-shoese-website/issues"
+  },
+  "homepage": "https://github.com/ayu-dash/goede-shoese-website#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
