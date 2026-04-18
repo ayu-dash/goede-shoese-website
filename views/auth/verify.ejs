@@ -66,10 +66,8 @@
 
     document.getElementById('verify-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      // Ensure hidden input is updated before sending
       updateHidden();
-      
+
       const email = localStorage.getItem('tempEmail');
 
       if (!email) {
@@ -95,7 +93,7 @@
           localStorage.removeItem('tempEmail');
           localStorage.setItem('token', result.token);
           alert('Verifikasi berhasil!');
-          
+
           const userRole = result.data.user.role;
           if (userRole === 'admin') {
             window.location.href = '/admin/dashboard';

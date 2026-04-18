@@ -42,9 +42,13 @@
             <div class="form-group">
               <label for="phone" class="form-label">Nomor Telepon</label>
               <div class="form-input-wrap">
-                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+62 812 3456 7890" required />
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="081234567890" 
+                  pattern="^(08|628|\+628)[0-9]{8,12}$" 
+                  title="Gunakan format nomor Indonesia (Contoh: 0812..., 62812..., atau +62812...)" 
+                  required />
               </div>
             </div>
+
 
             <!-- Kata Sandi -->
             <div class="form-group">
@@ -93,6 +97,16 @@
                 btn.textContent = 'Daftar Sekarang';
                 return;
               }
+
+              // Phone validation
+              const phoneRegex = /^(08|628|\+628)[0-9]{8,12}$/;
+              if (!phoneRegex.test(data.phone)) {
+                alert('Format nomor telepon tidak valid! Gunakan format Indonesia (contoh: 081234567890).');
+                btn.disabled = false;
+                btn.textContent = 'Daftar Sekarang';
+                return;
+              }
+
 
               try {
                 const res = await fetch('/api/auth/register', {

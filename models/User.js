@@ -15,8 +15,15 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: [true, "Please provide your phone number"],
+        required: [true, "Pleas provide your phone number!"],
+        validate: {
+            validator: function (v) {
+                return /^(08|628|\+628)[0-9]{8,12}$/.test(v);
+            },
+            message: (props) => `${props.value} bukan nomor telepon Indonesia yang valid!`,
+        },
     },
+
     password: {
         type: String,
         required: [true, "Please provide a password"],
@@ -61,17 +68,17 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userSchema.pre("save", async function() {
+userSchema.pre("save", async function () {
     if (!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 12);
 });
 
 
-userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-userSchema.methods.createPasswordResetToken = function() {
+userSchema.methods.createPasswordResetToken = function () {
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     this.passwordResetToken = crypto
