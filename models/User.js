@@ -23,10 +23,26 @@ const userSchema = new mongoose.Schema({
         minlength: 8,
         select: false,
     },
-    address: {
-        type: String,
-        required: [true, "Please provide your address"],
-    },
+    addresses: [
+        {
+            label: {
+                type: String,
+                default: "Utama",
+            },
+            recipientName: {
+                type: String,
+                required: [true, "Please provide the recipient name"],
+            },
+            fullAddress: {
+                type: String,
+                required: [true, "Please provide the full address"],
+            },
+            notes: {
+                type: String,
+            },
+        },
+    ],
+
     isVerified: {
         type: Boolean,
         default: false,

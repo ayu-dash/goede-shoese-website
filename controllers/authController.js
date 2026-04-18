@@ -44,11 +44,18 @@ exports.register = async (req, res) => {
             name,
             email,
             phone,
-            address,
+            addresses: [
+                {
+                    label: "Utama",
+                    recipientName: name,
+                    fullAddress: address,
+                },
+            ],
             password,
             otp,
             otpExpires,
         });
+
 
         const message = `Your Goede Shoes verification code is: ${otp}. It will expire in 10 minutes.`;
         
