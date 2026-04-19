@@ -1,0 +1,174 @@
+<%- include('../partials/dashboard-head') %>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1 class="page-title page-title--xl">PESANAN SAYA</h1>
+</div>
+
+<!-- FILTER TABS -->
+<div class="order-tabs">
+  <button class="order-tab active" data-filter="all">Semua</button>
+  <button class="order-tab" data-filter="proses">Dalam Proses</button>
+  <button class="order-tab" data-filter="selesai">Selesai</button>
+  <button class="order-tab" data-filter="batal">Dibatalkan</button>
+</div>
+
+<!-- PESANAN AKTIF -->
+<div class="orders-section">
+  <div class="orders-section-header">
+    <h3 class="dash-subtitle dash-subtitle--upper">PESANAN AKTIF</h3>
+    <span class="orders-badge">1 BERLANGSUNG</span>
+  </div>
+
+  <div class="active-order-card">
+    <div class="active-order-img">
+      <img src="/images/nike-air-max-270.png" alt="Nike Air Max 270" />
+    </div>
+    <div class="active-order-content">
+      <div class="active-order-top">
+        <div>
+          <span class="active-order-id">#ORD-8821</span>
+          <h4 class="active-order-name">Nike Air Max 270</h4>
+          <div class="active-order-services">
+            <span class="service-badge">DEEP CLEAN</span>
+            <span class="service-badge">UNYELLOWING</span>
+          </div>
+        </div>
+        <div class="active-order-status-wrap">
+          <span class="active-order-status-label">STATUS</span>
+          <span class="active-order-status"
+            ><i class="fa-solid fa-circle"></i> Sedang Dicuci</span
+          >
+        </div>
+      </div>
+
+      <div class="active-order-progress">
+        <div class="progress-header">
+          <span class="progress-label">PROGRESS PENGERJAAN</span>
+          <span class="progress-pct">65%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 65%"></div>
+        </div>
+      </div>
+
+      <div class="active-order-bottom">
+        <div class="active-order-estimate">
+          <i class="fa-regular fa-calendar"></i>
+          <div>
+            <span class="estimate-label">ESTIMASI SELESAI</span>
+            <span class="estimate-value">24 Nov, 14:00</span>
+          </div>
+        </div>
+        <a href="/customer/order-detail" class="btn btn-primary btn-sm"
+          >DETAIL</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIWAYAT PESANAN -->
+<div class="orders-section">
+  <h3 class="dash-subtitle dash-subtitle--upper">RIWAYAT PESANAN</h3>
+
+  <div class="history-grid">
+    <!-- Card 1 -->
+    <div class="history-card">
+      <div class="history-card-top">
+        <img
+          src="/images/adidas-ultraboost.png"
+          alt="Adidas Ultraboost 21"
+          class="history-card-img"
+        />
+        <div class="history-card-info">
+          <span class="history-card-id">#ORD-4712</span>
+          <span class="history-status-badge">SELESAI</span>
+          <h4 class="history-card-name">Adidas Ultraboost 21</h4>
+          <span class="history-card-service">Regular Clean • 18 Nov 2025</span>
+        </div>
+      </div>
+      <a
+        href="/customer/order-detail"
+        class="btn btn-outline-dark btn-sm history-btn"
+        >Lihat Detail</a
+      >
+    </div>
+
+    <!-- Card 2 -->
+    <div class="history-card">
+      <div class="history-card-top">
+        <img
+          src="/images/jordan-1-retro.png"
+          alt="Jordan 1 Retro High"
+          class="history-card-img"
+        />
+        <div class="history-card-info">
+          <span class="history-card-id">#ORD-8410</span>
+          <span class="history-status-badge">SELESAI</span>
+          <h4 class="history-card-name">Jordan 1 Retro High</h4>
+          <span class="history-card-service"
+            >Premium Repaint • 17 Nov 2025</span
+          >
+        </div>
+      </div>
+      <a
+        href="/customer/order-detail"
+        class="btn btn-outline-dark btn-sm history-btn"
+        >Lihat Detail</a
+      >
+    </div>
+
+    <!-- Card 3 -->
+    <div class="history-card">
+      <div class="history-card-top">
+        <img
+          src="/images/nb-574-grey.png"
+          alt="New Balance 574 Grey"
+          class="history-card-img"
+        />
+        <div class="history-card-info">
+          <span class="history-card-id">#ORD-8330</span>
+          <span class="history-status-badge">SELESAI</span>
+          <h4 class="history-card-name">New Balance 574 Grey</h4>
+          <span class="history-card-service">Suede Care • 05 Nov 2025</span>
+        </div>
+      </div>
+      <a
+        href="/customer/order-detail"
+        class="btn btn-outline-dark btn-sm history-btn"
+        >Lihat Detail</a
+      >
+    </div>
+
+    <!-- Card 4 -->
+    <div class="history-card">
+      <div class="history-card-top">
+        <img
+          src="/images/vans-old-skool.png"
+          alt="Vans Old Skool Black"
+          class="history-card-img"
+        />
+        <div class="history-card-info">
+          <span class="history-card-id">#ORD-9411</span>
+          <span class="history-status-badge">SELESAI</span>
+          <h4 class="history-card-name">Vans Old Skool Black</h4>
+          <span class="history-card-service">Deep Clean • 01 Nov 2025</span>
+        </div>
+      </div>
+      <a
+        href="/customer/order-detail"
+        class="btn btn-outline-dark btn-sm history-btn"
+        >Lihat Detail</a
+      >
+    </div>
+  </div>
+
+  <div class="history-more">
+    <button class="btn btn-outline-dark btn-load-more">
+      TAMPILKAN LEBIH BANYAK
+    </button>
+  </div>
+</div>
+
+<%- include('../partials/dashboard-foot') %>

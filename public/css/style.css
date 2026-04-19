@@ -396,7 +396,7 @@ ul {
 .tag-desc {
   display: block;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   line-height: 1.5;
   max-width: 200px;
 }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Goede Shoes — Dashboard perawatan sepatu profesional Anda.">
+  <title><%= typeof title !== 'undefined' ? title + ' — Goede Shoes' : 'Dashboard — Goede Shoes' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <a href="/" class="logo">GO<span class="logo-highlight">ED</span>E</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/customer/dashboard" class="sidebar-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>" id="nav-dashboard">
+      <i class="fa-solid fa-grip"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="/customer/my-orders" class="sidebar-link <%= typeof activePage !== 'undefined' && activePage === 'my-orders' ? 'active' : '' %>" id="nav-orders">
+      <i class="fa-regular fa-clipboard"></i>
+      <span>Pesanan Saya</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="/login" class="sidebar-link sidebar-link--logout">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      <span>Log Out</span>
+    </a>
+  </div>
+</aside>
+
+<div class="dashboard-main">
+  <header class="topbar">
+    <div class="topbar-right">
+      <button class="topbar-bell" aria-label="Notifications">
+        <i class="fa-regular fa-bell"></i>
+      </button>
+      <a href="/customer/profile" class="topbar-user">
+        <div class="topbar-user-info">
+          <span class="topbar-user-name">Andi Pratama</span>
+          <span class="topbar-user-role">Member Platinum</span>
+        </div>
+        <div class="topbar-avatar">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <main class="dashboard-content">

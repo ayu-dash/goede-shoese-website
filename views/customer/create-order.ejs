@@ -1,0 +1,294 @@
+<%- include('../partials/dashboard-head') %>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Buat Pesanan Baru</h1>
+    <p class="page-subtitle">
+      Berikan perawatan terbaik untuk koleksi sepatu Anda dengan standar presisi
+      GOEDE.
+    </p>
+  </div>
+</div>
+
+<div class="order-layout">
+  <!-- LEFT: FORM -->
+  <div class="order-form-col">
+    <!-- DETAIL ITEM SEPATU -->
+    <div class="order-section">
+      <div class="order-section-header">
+        <h3 class="order-section-title">Detail Item Sepatu</h3>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-add-shoe">
+          <i class="fa-solid fa-plus"></i> Tambah Sepatu
+        </button>
+      </div>
+
+      <!-- Item 1 -->
+      <div class="shoe-item" id="shoe-item-1">
+        <div class="shoe-item-header">
+          <span class="shoe-item-label">Item 1</span>
+          <button type="button" class="shoe-item-remove" data-item="1">
+            Hapus
+          </button>
+        </div>
+        <div class="shoe-item-fields">
+          <div class="form-group">
+            <label class="form-label form-label--upper">Nama Sepatu</label>
+            <input
+              type="text"
+              class="form-input"
+              value="Air Jordan 1 Retro High"
+              placeholder="Masukkan nama sepatu"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label--upper">Jenis Layanan</label>
+            <select class="form-input form-select">
+              <option>Deep Clean (Regular)</option>
+              <option>Fast Clean</option>
+              <option>Deep Clean Express</option>
+              <option>Premium Repaint</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label form-label--upper"
+            >Layanan Tambahan (Add-Ons)</label
+          >
+          <div class="addon-tags">
+            <label class="addon-tag active"
+              ><input type="checkbox" checked /> Unyellowing</label
+            >
+            <label class="addon-tag"
+              ><input type="checkbox" /> Glue & Repress</label
+            >
+            <label class="addon-tag"
+              ><input type="checkbox" /> Leather Polish</label
+            >
+            <label class="addon-tag"
+              ><input type="checkbox" /> Deodorizer</label
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="shoe-item" id="shoe-item-2">
+        <div class="shoe-item-header">
+          <span class="shoe-item-label">Item 2</span>
+          <button type="button" class="shoe-item-remove" data-item="2">
+            Hapus
+          </button>
+        </div>
+        <div class="shoe-item-fields">
+          <div class="form-group">
+            <label class="form-label form-label--upper">Nama Sepatu</label>
+            <input
+              type="text"
+              class="form-input"
+              value="Vans Old Skool Black"
+              placeholder="Masukkan nama sepatu"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label--upper">Jenis Layanan</label>
+            <select class="form-input form-select">
+              <option>Fast Clean</option>
+              <option>Deep Clean (Regular)</option>
+              <option>Deep Clean Express</option>
+              <option>Premium Repaint</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label form-label--upper"
+            >Layanan Tambahan (Add-Ons)</label
+          >
+          <div class="addon-tags">
+            <label class="addon-tag"
+              ><input type="checkbox" /> Unyellowing</label
+            >
+            <label class="addon-tag"
+              ><input type="checkbox" /> Glue & Repress</label
+            >
+            <label class="addon-tag"
+              ><input type="checkbox" /> Leather Polish</label
+            >
+            <label class="addon-tag active"
+              ><input type="checkbox" checked /> Deodorizer</label
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METODE LOGISTIK -->
+    <div class="order-section">
+      <h3 class="order-section-title">Metode Logistik</h3>
+      <div class="logistics-grid">
+        <!-- Pickup -->
+        <div class="logistics-card">
+          <div class="logistics-card-header">
+            <i class="fa-solid fa-box-open"></i> Pengambilan (Pickup)
+          </div>
+          <div class="logistics-toggle">
+            <button
+              type="button"
+              class="toggle-btn"
+              data-group="pickup"
+              data-value="self"
+            >
+              Antar Sendiri
+            </button>
+            <button
+              type="button"
+              class="toggle-btn active"
+              data-group="pickup"
+              data-value="pickup"
+            >
+              Pickup
+            </button>
+          </div>
+          <div class="logistics-detail" id="pickup-detail">
+            <span class="logistics-detail-label">ALAMAT JEMPUT</span>
+            <p class="logistics-detail-value">
+              Apartemen Menteng Park, Tower Emerald 12A<br /><small
+                >Jakarta Pusat, 10220</small
+              >
+            </p>
+          </div>
+        </div>
+        <!-- Delivery -->
+        <div class="logistics-card">
+          <div class="logistics-card-header">
+            <i class="fa-solid fa-truck"></i> Pengantaran (Delivery)
+          </div>
+          <div class="logistics-toggle">
+            <button
+              type="button"
+              class="toggle-btn"
+              data-group="delivery"
+              data-value="self"
+            >
+              Antar Sendiri
+            </button>
+            <button
+              type="button"
+              class="toggle-btn active"
+              data-group="delivery"
+              data-value="delivery"
+            >
+              Delivery
+            </button>
+          </div>
+          <div class="logistics-detail" id="delivery-detail">
+            <p class="logistics-info-note">
+              <i class="fa-regular fa-circle-check"></i> Gunakan alamat yang
+              sama dengan yang dijemput
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METODE PEMBAYARAN -->
+    <div class="order-section">
+      <h3 class="order-section-title">Metode Pembayaran</h3>
+      <div class="payment-grid">
+        <label class="payment-card active">
+          <input type="radio" name="payment" value="bank" checked />
+          <div class="payment-card-inner">
+            <div class="payment-check">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="payment-icon">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <span class="payment-name">Transfer Bank</span>
+            <p class="payment-desc">
+              Via Bisnis Indonesia. Keamanan & transfer bank digital
+              terverifikasi.
+            </p>
+            <div class="payment-logos">
+              <span class="bank-logo">BCA</span>
+              <span class="bank-logo bank-logo--active">mandiri</span>
+              <span class="bank-logo">bni</span>
+            </div>
+          </div>
+        </label>
+        <label class="payment-card">
+          <input type="radio" name="payment" value="cod" />
+          <div class="payment-card-inner">
+            <div class="payment-check">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="payment-icon">
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <span class="payment-name">COD (Bayar di Tempat)</span>
+            <p class="payment-desc">
+              Bayar saat kurir menjemput atau mengantar kembali sepatu Anda.
+            </p>
+            <span class="payment-note">TERMASUK DAFTAR LAYANAN COD</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div class="order-summary-col">
+    <div class="order-summary-card" id="order-summary">
+      <h4 class="order-summary-title">Ringkasan Pesanan</h4>
+
+      <div class="order-summary-item">
+        <div>
+          <span class="summary-item-name">Air Jordan 1 Retro...</span>
+          <span class="summary-item-service">DEEP CLEAN + UNYELLOWING</span>
+        </div>
+        <span class="summary-item-price">Rp 125.000</span>
+      </div>
+
+      <div class="order-summary-item">
+        <div>
+          <span class="summary-item-name">Vans Old Skool Black</span>
+          <span class="summary-item-service">FAST CLEAN</span>
+        </div>
+        <span class="summary-item-price">Rp 45.000</span>
+      </div>
+
+      <div class="order-summary-divider"></div>
+
+      <div class="order-summary-row">
+        <span>Subtotal</span>
+        <span class="summary-price">Rp 170.000</span>
+      </div>
+      <div class="order-summary-row">
+        <span>Biaya Jemput/Antar</span>
+        <span class="summary-price">Rp 15.000</span>
+      </div>
+
+      <div class="order-summary-estimate">
+        <i class="fa-regular fa-clock"></i> ESTIMASI SELESAI
+        <span class="estimate-badge">3-5 Hari Kerja</span>
+      </div>
+
+      <div class="order-summary-divider"></div>
+
+      <div class="order-summary-row order-summary-total">
+        <span>TOTAL PEMBAYARAN</span>
+        <span class="summary-total-price">Rp 185.000</span>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary btn-auth"
+        id="btn-confirm-order"
+      >
+        Konfirmasi Pesanan
+      </button>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/dashboard-foot') %>

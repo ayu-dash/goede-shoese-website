@@ -1,0 +1,206 @@
+<%- include('../partials/dashboard-head') %>
+
+<div class="page-header page-header--profile">
+  <h1 class="page-title page-title--xl">PROFIL CUSTOMER</h1>
+</div>
+
+<!-- PROFILE CARD -->
+<div class="profile-card" id="profileCard">
+  <div class="profile-card-header">
+    <div class="profile-info-main">
+      <img src="https://ui-avatars.com/api/?name=Adrian+Wijaya&background=0D8ABC&color=fff&size=150" class="profile-avatar" alt="Avatar">
+      <div class="profile-name-block">
+        <h3>Adrian Wijaya</h3>
+        <span class="profile-joined">Bergabung sejak Jan 2023</span>
+      </div>
+    </div>
+    <button class="btn-edit-profile" onclick="toggleEditMode(true)">
+      <i class="fa-solid fa-pen"></i> EDIT PROFILE
+    </button>
+  </div>
+
+  <div class="profile-fields-grid">
+    <div>
+      <span class="profile-field-label">FULL NAME</span>
+      <span class="profile-field-value">Adrian Wijaya</span>
+      <input type="text" class="profile-field-input" value="Adrian Wijaya">
+    </div>
+    <div>
+      <span class="profile-field-label">EMAIL ADDRESS</span>
+      <span class="profile-field-value">adrian.wijaya@example.com</span>
+      <input type="email" class="profile-field-input" value="adrian.wijaya@example.com">
+    </div>
+    <div>
+      <span class="profile-field-label">PHONE NUMBER</span>
+      <span class="profile-field-value">+62 812 3456 7890</span>
+      <input type="tel" class="profile-field-input" value="+62 812 3456 7890">
+    </div>
+  </div>
+
+  <div class="profile-edit-actions">
+    <button class="btn btn-white btn-sm btn-ghost-cancel" onclick="toggleEditMode(false)">BATAL</button>
+    <button class="btn btn-primary btn-sm" onclick="saveProfile()">SIMPAN PERUBAHAN</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="profile-stats-grid">
+  <div class="profile-stat-box">
+    <div class="stat-box-icon"><i class="fa-solid fa-shoe-prints"></i></div>
+    <div>
+      <span class="stat-box-val">24</span>
+      <span class="stat-box-title">TOTAL PESANAN</span>
+    </div>
+  </div>
+  <div class="profile-stat-box">
+    <div class="stat-box-icon brown"><i class="fa-regular fa-clipboard"></i></div>
+    <div>
+      <span class="stat-box-val">02</span>
+      <span class="stat-box-title">PESANAN AKTIF</span>
+    </div>
+  </div>
+  <div class="profile-stat-box">
+    <div class="stat-box-icon gray"><i class="fa-solid fa-money-bill-wave"></i></div>
+    <div>
+      <span class="stat-box-val">Rp 2.4M</span>
+      <span class="stat-box-title">TOTAL PENGELUARAN</span>
+    </div>
+  </div>
+</div>
+
+<!-- ADDRESSES -->
+<div class="address-header">
+  <h2 class="address-title">ALAMAT TERSIMPAN</h2>
+  <button class="btn-add-address" onclick="openModal('addAddressModal')">
+    <i class="fa-solid fa-circle-plus"></i> Tambah Alamat Baru
+  </button>
+</div>
+
+<div class="address-grid">
+  <!-- Rumah -->
+  <div class="address-card">
+    <div class="address-card-actions">
+      <button onclick="openModal('editAddressModal')"><i class="fa-solid fa-pen"></i></button>
+      <button><i class="fa-solid fa-trash-can"></i></button>
+    </div>
+    <span class="address-badge">RUMAH</span>
+    <h4 class="address-recipient">Adrian Wijaya</h4>
+    <p class="address-detail">Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan, 12190</p>
+    <p class="address-phone"><i class="fa-solid fa-phone"></i> +62 812-3456-7890</p>
+  </div>
+
+  <!-- Kantor -->
+  <div class="address-card">
+    <div class="address-card-actions">
+      <button onclick="openModal('editAddressModal')"><i class="fa-solid fa-pen"></i></button>
+      <button><i class="fa-solid fa-trash-can"></i></button>
+    </div>
+    <span class="address-badge gray">KANTOR</span>
+    <h4 class="address-recipient">Adrian Wijaya (Goede Corp)</h4>
+    <p class="address-detail">Sudirman Central Business District (SCBD), Gedung Treasury Lt. 18, Jakarta Selatan</p>
+    <p class="address-phone"><i class="fa-solid fa-phone"></i> +62 812-9876-5432</p>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Modal Add Address -->
+<div class="modal-overlay" id="addAddressModal" onclick="closeModal(event, 'addAddressModal')">
+  <div class="modal-content">
+    <h3 class="modal-title">Tambah Alamat Baru</h3>
+    <form onsubmit="event.preventDefault(); closeModalRaw('addAddressModal');">
+      <div class="modal-form-grid">
+        <div class="modal-form-group">
+          <label class="modal-label">NAMA ALAMAT</label>
+          <input type="text" class="modal-input" placeholder="Contoh: Rumah, Kantor, Ap...">
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label">NAMA PENERIMA</label>
+          <input type="text" class="modal-input" placeholder="Masukkan nama lengkap">
+        </div>
+        <div class="modal-form-group full">
+          <label class="modal-label">NOMOR TELEPON</label>
+          <input type="tel" class="modal-input" placeholder="+62">
+        </div>
+        <div class="modal-form-group full">
+          <label class="modal-label">ALAMAT LENGKAP</label>
+          <textarea class="modal-input" placeholder="Tuliskan alamat detail (Nama jalan, No. rumah, RT/RW, Kecamatan)"></textarea>
+        </div>
+        <div class="modal-form-group full">
+          <label class="modal-label">CATATAN ALAMAT (OPSIONAL)</label>
+          <textarea class="modal-input" placeholder="Warna pagar, dekat pos satpam, atau instruksi khusus lainnya..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Simpan Alamat</button>
+        <button type="button" class="btn btn-white btn-ghost-cancel" onclick="closeModalRaw('addAddressModal')">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Edit Address -->
+<div class="modal-overlay" id="editAddressModal" onclick="closeModal(event, 'editAddressModal')">
+  <div class="modal-content">
+    <h3 class="modal-title">Edit Alamat</h3>
+    <form onsubmit="event.preventDefault(); closeModalRaw('editAddressModal');">
+      <div class="modal-form-grid">
+        <div class="modal-form-group">
+          <label class="modal-label">NAMA ALAMAT</label>
+          <input type="text" class="modal-input" value="RUMAH">
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label">NAMA PENERIMA</label>
+          <input type="text" class="modal-input" value="Adrian Wijaya">
+        </div>
+        <div class="modal-form-group full">
+          <label class="modal-label">NOMOR TELEPON</label>
+          <input type="tel" class="modal-input" value="+62 812 3456 7890">
+        </div>
+        <div class="modal-form-group full">
+          <label class="modal-label">ALAMAT LENGKAP</label>
+          <textarea class="modal-input">Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan, 12190</textarea>
+        </div>
+        <div class="modal-form-group full">
+          <label class="modal-label">CATATAN ALAMAT (OPSIONAL)</label>
+          <textarea class="modal-input" placeholder="Warna pagar, dekat pos satpam, atau instruksi khusus lainnya..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Simpan Alamat</button>
+        <button type="button" class="btn btn-white btn-ghost-cancel" onclick="closeModalRaw('editAddressModal')">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleEditMode(isEditing) {
+    const card = document.getElementById('profileCard');
+    if(isEditing) {
+      card.classList.add('is-editing');
+    } else {
+      card.classList.remove('is-editing');
+    }
+  }
+
+  function saveProfile() {
+    toggleEditMode(false);
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add('active');
+  }
+
+  function closeModal(e, id) {
+    if (e.target.id === id) {
+      document.getElementById(id).classList.remove('active');
+    }
+  }
+
+  function closeModalRaw(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+</script>
+
+<%- include('../partials/dashboard-foot') %>

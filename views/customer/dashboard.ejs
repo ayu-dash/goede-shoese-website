@@ -1,9 +1,147 @@
-<%- include('../partials/header') %>
-  <section class="dashboard">
-    <div class="container" style="padding: 100px 20px; text-align: center;">
-      <h1>Customer Dashboard</h1>
-      <p>Selamat datang di dashboard pelanggan Goede Shoes!</p>
-      <a href="/" class="btn btn-primary">Kembali ke Beranda</a>
+<%- include('../partials/dashboard-head') %>
+
+<!-- DASHBOARD HERO BANNER -->
+<div class="dash-banner">
+  <img src="/images/dashboard-banner.png" alt="" class="dash-banner-bg" />
+  <div class="dash-banner-overlay"></div>
+  <div class="dash-banner-content">
+    <h2 class="dash-banner-title">Berikan Kilau Baru<br />Pada Sepatu Anda.</h2>
+    <a href="/customer/create-order" class="btn btn-white dash-banner-btn">
+      <i class="fa-solid fa-circle-plus"></i> Pesan Perawatan
+    </a>
+  </div>
+</div>
+
+<!-- DASHBOARD BODY GRID -->
+<div class="dash-body">
+  <!-- LEFT COLUMN -->
+  <div class="dash-left">
+    <!-- AKTIVITAS SAYA -->
+    <h3 class="dash-section-title">Aktivitas Saya</h3>
+    <div class="dash-stats">
+      <div class="dash-stat-card">
+        <span class="dash-stat-label">TOTAL PESANAN</span>
+        <div class="dash-stat-row">
+          <span class="dash-stat-num">24</span>
+          <span class="dash-stat-badge dash-stat-badge--up"
+            ><i class="fa-solid fa-arrow-trend-up"></i> +12%</span
+          >
+        </div>
+      </div>
+      <div class="dash-stat-card">
+        <span class="dash-stat-label">STATUS AKTIF</span>
+        <div class="dash-stat-row">
+          <span class="dash-stat-num">03</span>
+          <span class="dash-stat-sub"
+            >SEPATU SEDANG<br />
+            DICUCI</span
+          >
+        </div>
+      </div>
     </div>
-  </section>
-  <%- include('../partials/footer') %>
+
+    <!-- AKTIVITAS TERAKHIR -->
+    <div class="dash-activity-header">
+      <h4 class="dash-subtitle">Aktivitas Terakhir</h4>
+      <a href="/customer/my-orders" class="dash-link"
+        >Lihat Semua <i class="fa-solid fa-arrow-right"></i
+      ></a>
+    </div>
+
+    <div class="dash-activity-list">
+      <!-- Activity Item 1 -->
+      <div class="dash-activity-item">
+        <img
+          src="/images/nike-air-max-270.png"
+          alt="Nike Air Max 270"
+          class="dash-activity-img"
+        />
+        <div class="dash-activity-info">
+          <span class="dash-activity-name">Nike Air Max 270</span>
+          <span class="dash-activity-service">Deep Clean + Unyellowing</span>
+        </div>
+        <div class="dash-activity-meta">
+          <span class="dash-activity-meta-label">ESTIMASI SELESAI</span>
+          <span class="dash-activity-meta-value">Besok, 14:00</span>
+        </div>
+        <div class="dash-activity-status dash-activity-status--process">
+          <i class="fa-solid fa-circle"></i> Proses Cuci
+        </div>
+      </div>
+
+      <!-- Activity Item 2 -->
+      <div class="dash-activity-item">
+        <img
+          src="/images/adidas-ultraboost.png"
+          alt="Adidas Ultraboost"
+          class="dash-activity-img"
+        />
+        <div class="dash-activity-info">
+          <span class="dash-activity-name">Adidas Ultraboost</span>
+          <span class="dash-activity-service">Expressa Cleaning</span>
+        </div>
+        <div class="dash-activity-meta">
+          <span class="dash-activity-meta-label">SELESAI PADA</span>
+          <span class="dash-activity-meta-value">Hari ini, 09:15</span>
+        </div>
+        <div class="dash-activity-status dash-activity-status--done">
+          <i class="fa-solid fa-circle-check"></i> Sudah Selesai
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="dash-right">
+    <!-- TIPS PERAWATAN -->
+    <div class="dash-tips-card">
+      <h4 class="dash-tips-title">Tips Perawatan</h4>
+      <div class="dash-tip-item">
+        <div class="dash-tip-icon"><i class="fa-solid fa-sun"></i></div>
+        <div>
+          <span class="dash-tip-name">Hindari Sinar Matahari</span>
+          <span class="dash-tip-desc"
+            >Jangan menjemur sepatu langsung di bawah terik matahari agar warna
+            tidak pudar.</span
+          >
+        </div>
+      </div>
+      <div class="dash-tip-item">
+        <div class="dash-tip-icon"><i class="fa-solid fa-broom"></i></div>
+        <div>
+          <span class="dash-tip-name">Sikat Satu Arah</span>
+          <span class="dash-tip-desc"
+            >Sikat sepatu dengan arah satu sisi untuk menjaga kerapatan material
+            suede.</span
+          >
+        </div>
+      </div>
+      <div class="dash-tip-item">
+        <div class="dash-tip-icon">
+          <i class="fa-solid fa-boxes-stacked"></i>
+        </div>
+        <div>
+          <span class="dash-tip-name">Gunakan Silica Gel</span>
+          <span class="dash-tip-desc"
+            >Simpan sepatu bersama silica gel untuk menyerap kelembapan dan
+            mencegah jamur di area tertutup.</span
+          >
+        </div>
+      </div>
+      <a href="#" class="dash-tips-link">Baca Panduan Lengkap</a>
+    </div>
+
+    <!-- OUTLET TERDEKAT -->
+    <div class="dash-outlet-card">
+      <span class="dash-outlet-label">OUTLET TERDEKAT</span>
+      <div class="dash-outlet-row">
+        <span class="dash-outlet-name">Goede Shoes SCBD, Jakarta</span>
+        <a href="#" class="dash-outlet-map" aria-label="Lihat Peta">
+          <i class="fa-solid fa-location-dot"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/dashboard-foot') %>
