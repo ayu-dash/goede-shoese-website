@@ -6,19 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   // PRICE CONFIGURATION
   // =========================
-  const SERVICE_PRICES = {
-    "Deep Clean (Regular)": 40000,
-    "Fast Clean": 25000,
-    "Deep Clean Express": 60000,
-    "Premium Repaint": 150000,
-  };
-
-  const ADDON_PRICES = {
-    "Unyellowing": 50000,
-    "Glue & Repress": 60000,
-    "Leather Polish": 30000,
-    "Deodorizer": 15000,
-  };
+  const SERVICE_PRICES = window.DYNAMIC_PRICES ? window.DYNAMIC_PRICES.SERVICES : {};
+  const ADDON_PRICES = window.DYNAMIC_PRICES ? window.DYNAMIC_PRICES.ADDONS : {};
 
   const LOGISTICS_FEE = 15000;
 
@@ -35,28 +24,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let subtotal = 0;
     const items = [];
+    let maxDaysMin = 0;
+    let maxDaysMax = 0;
+    const SERVICE_METADATA = window.DYNAMIC_SERVICES || {};
+
+    const getDays = (name) => {
+      const meta = SERVICE_METADATA[name];
+      if (!meta) return { min: 0, max: 0 };
+      const multiplier = meta.timeUnit === "Minggu" ? 7 : 1;
+      return { min: meta.timeMin * multiplier, max: meta.timeMax * multiplier };
+    };
 
     document.querySelectorAll(".shoe-item").forEach((item) => {
-      const shoeName = item.querySelector(".shoe-name").value || "Sepatu Tanpa Nama";
+      const rawShoeName = item.querySelector(".shoe-name").value.trim();
       const serviceType = item.querySelector(".service-type").value;
-      const addons = [];
-      let itemPrice = SERVICE_PRICES[serviceType] || 40000;
+      const shoeLabel = item.querySelector(".shoe-item-label") ? item.querySelector(".shoe-item-label").innerText : "Item";
 
+      const addons = [];
       item.querySelectorAll(".addon-tag input:checked").forEach((cb) => {
         addons.push(cb.value);
-        itemPrice += ADDON_PRICES[cb.value] || 0;
       });
 
+
+      if (!rawShoeName && !serviceType && addons.length === 0) {
+        return;
+      }
+
+      const shoeName = rawShoeName || shoeLabel;
+      let itemPrice = SERVICE_PRICES[serviceType] || 0;
+
+      let itemMin = getDays(serviceType).min;
+      let itemMax = getDays(serviceType).max;
+
+      addons.forEach((a) => {
+        itemPrice += ADDON_PRICES[a] || 0;
+
+        const aDays = getDays(a);
+        if (aDays.max > 0) {
+          itemMax = Math.max(itemMax, aDays.max);
+          itemMin = Math.max(itemMin, aDays.min);
+        }
+      });
+
+      maxDaysMin = Math.max(maxDaysMin, itemMin);
+      maxDaysMax = Math.max(maxDaysMax, itemMax);
+
       subtotal += itemPrice;
-      
-      // Calculate breakdown for display
-      const basePrice = SERVICE_PRICES[serviceType] || 40000;
+
+      const basePrice = SERVICE_PRICES[serviceType] || 0;
       const addonsDetail = addons.map(a => ({ name: a, price: ADDON_PRICES[a] || 0 }));
-      
-      items.push({ shoeName, serviceType, basePrice, addonsDetail, itemPrice });
+
+      items.push({ shoeName, serviceType: serviceType || "Belum dipilih", basePrice, addonsDetail, itemPrice });
     });
 
-    // Update Items List
     if (items.length === 0) {
       summaryContainer.innerHTML = `<div class="order-summary-item placeholder-item"><p class="text-muted">Tambahkan sepatu untuk melihat ringkasan</p></div>`;
     } else {
@@ -79,24 +99,32 @@ document.addEventListener("DOMContentLoaded", () => {
       `).join("");
     }
 
-    // Update Logistics
+
     const pickupMethod = document.querySelector("[data-group='pickup'].active")?.dataset.value;
     const deliveryMethod = document.querySelector("[data-group='delivery'].active")?.dataset.value;
-    
-    // Fee is applied if ANY of the methods are NOT 'self'
+
     const logisticsFee = (pickupMethod === "pickup" || deliveryMethod === "delivery") ? LOGISTICS_FEE : 0;
 
-    // Update Totals
     subtotalEl.innerText = `Rp ${subtotal.toLocaleString('id-ID')}`;
     logisticsEl.innerText = `Rp ${logisticsFee.toLocaleString('id-ID')}`;
     totalEl.innerText = `Rp ${(subtotal + logisticsFee).toLocaleString('id-ID')}`;
+
+    const estimateBadge = document.querySelector(".estimate-badge");
+    if (estimateBadge) {
+      if (maxDaysMax === 0) {
+        estimateBadge.innerText = "0 Hari";
+      } else {
+        estimateBadge.innerText = (maxDaysMin === maxDaysMax)
+          ? `${maxDaysMax} Hari`
+          : `${maxDaysMin}-${maxDaysMax} Hari`;
+      }
+    }
   };
 
-  // Listen for changes
   document.addEventListener("change", (e) => {
-    if (e.target.classList.contains("shoe-name") || 
-        e.target.classList.contains("service-type") || 
-        e.target.type === "checkbox") {
+    if (e.target.classList.contains("shoe-name") ||
+      e.target.classList.contains("service-type") ||
+      e.target.type === "checkbox") {
       updateOrderSummary();
     }
   });
@@ -106,12 +134,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Re-bind logistics buttons to update summary
   const originalToggleLogic = (btn) => {
-      const group = btn.closest(".logistics-toggle");
-      group.querySelectorAll(".toggle-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      updateOrderSummary();
+    const group = btn.closest(".logistics-toggle");
+    group.querySelectorAll(".toggle-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    updateOrderSummary();
   };
   // =========================
   // ADD-ON TAG TOGGLE (Delegated)
@@ -137,10 +164,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const group = btn.closest(".logistics-toggle");
       group.querySelectorAll(".toggle-btn").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      
+
       const groupName = btn.dataset.group; // pickup or delivery
       const value = btn.dataset.value;     // self or pickup/delivery
-      
+
       if (groupName === "pickup") {
         const detail = document.getElementById("pickup-detail");
         const info = document.getElementById("pickup-self-info");
@@ -162,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
           info.classList.remove("d-none");
         }
       }
-      
+
       updateOrderSummary();
     });
   });
@@ -253,43 +280,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addShoeBtn.addEventListener("click", () => {
       shoeCount++;
-      const shoeItem = document.createElement("div");
-      shoeItem.className = "shoe-item";
-      shoeItem.id = `shoe-item-${shoeCount}`;
-      shoeItem.innerHTML = `
-        <div class="shoe-item-header">
-          <span class="shoe-item-label">Item ${shoeCount}</span>
-          <button type="button" class="shoe-item-remove" data-item="${shoeCount}">Hapus</button>
-        </div>
-        <div class="shoe-item-fields">
-          <div class="form-group">
-            <label class="form-label form-label--upper">Nama Sepatu</label>
-            <input type="text" class="form-input shoe-name" placeholder="Masukkan nama sepatu" />
-          </div>
-          <div class="form-group">
-            <label class="form-label form-label--upper">Jenis Layanan</label>
-            <select class="form-input form-select service-type">
-              <option>Deep Clean (Regular)</option>
-              <option>Fast Clean</option>
-              <option>Deep Clean Express</option>
-              <option>Premium Repaint</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label form-label--upper">Layanan Tambahan (Add-Ons)</label>
-          <div class="addon-tags">
-            <label class="addon-tag"><input type="checkbox" value="Unyellowing" /> Unyellowing (Rp 50.000)</label>
-            <label class="addon-tag"><input type="checkbox" value="Glue & Repress" /> Glue & Repress (Rp 60.000)</label>
-            <label class="addon-tag"><input type="checkbox" value="Leather Polish" /> Leather Polish (Rp 30.000)</label>
-            <label class="addon-tag"><input type="checkbox" value="Deodorizer" /> Deodorizer (Rp 15.000)</label>
-          </div>
-        </div>
-      `;
 
-      // Insert before the last shoe item's parent's end
+      const templateEl = document.getElementById("shoe-item-template");
       const container = document.querySelector(".order-section");
-      container.appendChild(shoeItem);
+
+      if (templateEl) {
+        // Gunakan template dinamis dari HTML jika tersedia
+        const newShoeHtml = templateEl.innerHTML.replace(/{INDEX}/g, shoeCount);
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = newShoeHtml.trim();
+        const shoeItem = wrapper.firstElementChild;
+        shoeItem.id = `shoe-item-${shoeCount}`;
+        container.appendChild(shoeItem);
+      } else {
+        // Fallback statis jika template tak ditemukan
+        const shoeItem = document.createElement("div");
+        shoeItem.className = "shoe-item";
+        shoeItem.id = `shoe-item-${shoeCount}`;
+        shoeItem.innerHTML = `
+          <div class="shoe-item-header">
+            <span class="shoe-item-label">Item ${shoeCount}</span>
+            <button type="button" class="shoe-item-remove" data-item="${shoeCount}">Hapus</button>
+          </div>
+          <div class="shoe-item-fields">
+            <div class="form-group">
+              <label class="form-label form-label--upper">Nama Sepatu</label>
+              <input type="text" class="form-input shoe-name" placeholder="Masukkan nama sepatu" />
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label--upper">Jenis Layanan</label>
+              <select class="form-input form-select service-type">
+                <option>Deep Clean (Regular)</option>
+                <option>Fast Clean</option>
+                <option>Deep Clean Express</option>
+                <option>Premium Repaint</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label--upper">Layanan Tambahan (Add-Ons)</label>
+            <div class="addon-tags">
+              <label class="addon-tag"><input type="checkbox" value="Unyellowing" /> Unyellowing (Rp 50.000)</label>
+              <label class="addon-tag"><input type="checkbox" value="Glue & Repress" /> Glue & Repress (Rp 60.000)</label>
+              <label class="addon-tag"><input type="checkbox" value="Leather Polish" /> Leather Polish (Rp 30.000)</label>
+              <label class="addon-tag"><input type="checkbox" value="Deodorizer" /> Deodorizer (Rp 15.000)</label>
+            </div>
+          </div>
+        `;
+        container.appendChild(shoeItem);
+      }
 
       updateOrderSummary();
     });
@@ -301,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".shoe-item-remove");
     if (!btn) return;
-    
+
     const item = btn.closest(".shoe-item");
     if (item) {
       item.remove();
@@ -316,6 +355,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (confirmOrderBtn) {
     confirmOrderBtn.addEventListener("click", async () => {
       const shoeItems = [];
+      let hasError = false;
+
       document.querySelectorAll(".shoe-item").forEach((item) => {
         const shoeName = item.querySelector(".shoe-name").value;
         const serviceType = item.querySelector(".service-type").value;
@@ -324,10 +365,19 @@ document.addEventListener("DOMContentLoaded", () => {
           addons.push(cb.value);
         });
 
-        if (shoeName) {
+        if (!shoeName || !serviceType) {
+          hasError = true;
+        }
+
+        if (shoeName && serviceType) {
           shoeItems.push({ shoeName, serviceType, addons });
         }
       });
+
+      if (hasError) {
+        alert("Mohon lengkapi nama sepatu dan pilih jenis layanannya.");
+        return;
+      }
 
       if (shoeItems.length === 0) {
         alert("Mohon tambahkan setidaknya satu sepatu.");
@@ -336,10 +386,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const pickupMethod = document.querySelector("[data-group='pickup'].active").dataset.value;
       const deliveryMethod = document.querySelector("[data-group='delivery'].active").dataset.value;
-      
+
       const pickupSelector = document.getElementById("pickup-address-selector");
       const deliverySelector = document.getElementById("delivery-address-selector");
-      
+
       const pickupAddress = (pickupMethod === "pickup" && pickupSelector) ? pickupSelector.value : "";
       const deliveryAddress = (deliveryMethod === "delivery" && deliverySelector) ? deliverySelector.value : "";
 

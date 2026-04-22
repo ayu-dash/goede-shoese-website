@@ -1,19 +1,6 @@
 const Order = require("../models/Order");
 
-// Mock Price Map (Based on Website)
-const SERVICE_PRICES = {
-    "Deep Clean (Regular)": 40000,
-    "Fast Clean": 25000,
-    "Deep Clean Express": 60000,
-    "Premium Repaint": 150000,
-};
-
-const ADDON_PRICES = {
-    "Unyellowing": 50000,
-    "Glue & Repress": 60000,
-    "Leather Polish": 30000,
-    "Deodorizer": 15000,
-};
+const Service = require("../models/Service");
 
 const LOGISTICS_FEE = 15000;
 
@@ -28,21 +15,49 @@ exports.createOrder = async (req, res) => {
             });
         }
 
-        // Calculate prices for each item
-        const processedItems = items.map((item) => {
-            let itemPrice = SERVICE_PRICES[item.serviceType] || 40000;
-            
-            if (item.addons && Array.isArray(item.addons)) {
-                item.addons.forEach((addon) => {
-                    itemPrice += ADDON_PRICES[addon] || 0;
-                });
+        // Fetch dynamic prices from DB
+        const dbServices = await Service.find({ isActive: true });
+        const SERVICE_PRICES = {};
+        const ADDON_PRICES = {};
+        dbServices.forEach(s => {
+            if (s.category === "Additional Cost") {
+                ADDON_PRICES[s.name] = s.price;
+            } else {
+                SERVICE_PRICES[s.name] = s.price;
+            }
+        });
+
+        // Calculate prices for each item with DB validation
+        const processedItems = [];
+        for (const item of items) {
+            if (!item.serviceType || item.serviceType === "Belum dipilih") {
+               return res.status(400).json({
+                   status: "fail",
+                   message: "Service type cannot be empty",
+               });
+            }
+            if (SERVICE_PRICES[item.serviceType] === undefined) {
+               return res.status(400).json({
+                   status: "fail",
+                   message: `Invalid service type selected: ${item.serviceType}`,
+               });
             }
 
-            return {
+            let itemPrice = SERVICE_PRICES[item.serviceType];
+            
+            if (item.addons && Array.isArray(item.addons)) {
+                for (const addon of item.addons) {
+                    if (ADDON_PRICES[addon] !== undefined) {
+                        itemPrice += ADDON_PRICES[addon];
+                    }
+                }
+            }
+
+            processedItems.push({
                 ...item,
                 price: itemPrice,
-            };
-        });
+            });
+        }
 
         const subtotal = processedItems.reduce((acc, item) => acc + item.price, 0);
         const totalLogistics = (logistics.pickupMethod === "pickup" || logistics.deliveryMethod === "delivery") ? LOGISTICS_FEE : 0;

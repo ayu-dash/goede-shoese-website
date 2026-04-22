@@ -219,6 +219,9 @@
 
   async function createService(event) {
     event.preventDefault();
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
     
@@ -236,10 +239,12 @@
       if (res.ok) {
         window.location.reload();
       } else {
+        if (submitBtn) submitBtn.disabled = false;
         const errorData = await res.json();
         alert("Gagal menambahkan layanan: " + (errorData.message || ""));
       }
     } catch (err) {
+      if (submitBtn) submitBtn.disabled = false;
       console.error(err);
     }
   }
@@ -257,6 +262,9 @@
 
   async function updateService(event) {
     event.preventDefault();
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
     const id = data.id;
@@ -275,10 +283,12 @@
       if (res.ok) {
         window.location.reload();
       } else {
+        if (submitBtn) submitBtn.disabled = false;
         const errorData = await res.json();
         alert("Gagal memperbarui layanan: " + (errorData.message || ""));
       }
     } catch (err) {
+      if (submitBtn) submitBtn.disabled = false;
       console.error(err);
     }
   }

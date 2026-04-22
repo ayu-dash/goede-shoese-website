@@ -11,6 +11,14 @@ exports.getAllServices = async (req, res) => {
 
 exports.createService = async (req, res) => {
     try {
+        if (req.body.estimatedTimeMin !== undefined && req.body.estimatedTimeMax !== undefined) {
+            const min = Number(req.body.estimatedTimeMin);
+            const max = Number(req.body.estimatedTimeMax);
+            if (min > max) {
+                req.body.estimatedTimeMin = max;
+                req.body.estimatedTimeMax = min;
+            }
+        }
         const newService = await Service.create(req.body);
         res.status(201).json({ status: "success", data: { service: newService } });
     } catch (error) {
@@ -20,6 +28,14 @@ exports.createService = async (req, res) => {
 
 exports.updateService = async (req, res) => {
     try {
+        if (req.body.estimatedTimeMin !== undefined && req.body.estimatedTimeMax !== undefined) {
+            const min = Number(req.body.estimatedTimeMin);
+            const max = Number(req.body.estimatedTimeMax);
+            if (min > max) {
+                req.body.estimatedTimeMin = max;
+                req.body.estimatedTimeMax = min;
+            }
+        }
         const service = await Service.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true

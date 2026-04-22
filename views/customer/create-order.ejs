@@ -11,6 +11,78 @@
     </div>
   </div>
 
+  <div id="goede-dynamic-data" 
+       data-mainservices="<%= JSON.stringify(mainServices) %>" 
+       data-addons="<%= JSON.stringify(addOns) %>" 
+       style="display: none;"></div>
+
+  <script>
+    try {
+      const dataContainer = document.getElementById("goede-dynamic-data");
+      const msData = JSON.parse(dataContainer.dataset.mainservices || "[]");
+      const aoData = JSON.parse(dataContainer.dataset.addons || "[]");
+
+      const dynamicServices = {};
+      const dynamicAddons = {};
+      const dynamicMetadata = {};
+
+      msData.forEach(s => {
+         dynamicServices[s.name] = s.price;
+         dynamicMetadata[s.name] = { price: s.price, timeMin: s.estimatedTimeMin, timeMax: s.estimatedTimeMax, timeUnit: s.estimatedTimeUnit };
+      });
+      
+      aoData.forEach(s => {
+         dynamicAddons[s.name] = s.price;
+         dynamicMetadata[s.name] = { price: s.price, timeMin: s.estimatedTimeMin, timeMax: s.estimatedTimeMax, timeUnit: s.estimatedTimeUnit };
+      });
+
+      window.DYNAMIC_PRICES = {
+        SERVICES: dynamicServices,
+        ADDONS: dynamicAddons
+      };
+      window.DYNAMIC_SERVICES = dynamicMetadata;
+    } catch (err) {
+      console.error("Error parsing dynamic data", err);
+    }
+  </script>
+
+  <!-- TEMPLATE UNTUK JS (Hidden) -->
+  <div id="shoe-item-template" style="display:none;">
+    <div class="shoe-item">
+      <div class="shoe-item-header">
+        <span class="shoe-item-label">Item {INDEX}</span>
+        <button type="button" class="shoe-item-remove" data-item="{INDEX}">
+          Hapus
+        </button>
+      </div>
+      <div class="shoe-item-fields">
+        <div class="form-group">
+          <label class="form-label form-label--upper">Nama Sepatu</label>
+          <input type="text" class="form-input shoe-name" placeholder="Masukkan nama sepatu" />
+        </div>
+        <div class="form-group">
+          <label class="form-label form-label--upper">Jenis Layanan</label>
+          <select class="form-input form-select service-type" required>
+            <option value="" disabled selected>-- Pilih Layanan --</option>
+            <% mainServices.forEach(s => { %>
+              <option value="<%= s.name %>"><%= s.name %> - Rp <%= s.price.toLocaleString("id-ID") %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <% if (addOns && addOns.length > 0) { %>
+      <div class="form-group">
+        <label class="form-label form-label--upper">Layanan Tambahan (Add-Ons)</label>
+        <div class="addon-tags">
+          <% addOns.forEach(s => { %>
+            <label class="addon-tag"><input type="checkbox" value="<%= s.name %>" /> <%= s.name %> (+Rp <%= s.price.toLocaleString("id-ID") %>)</label>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
   <div class="order-layout">
     <!-- LEFT: FORM -->
     <div class="order-form-col">
@@ -38,23 +110,24 @@
             </div>
             <div class="form-group">
               <label class="form-label form-label--upper">Jenis Layanan</label>
-              <select class="form-input form-select service-type">
-                <option>Deep Clean (Regular)</option>
-                <option>Fast Clean</option>
-                <option>Deep Clean Express</option>
-                <option>Premium Repaint</option>
+              <select class="form-input form-select service-type" required>
+                <option value="" disabled selected>-- Pilih Layanan --</option>
+                <% mainServices.forEach(s => { %>
+                  <option value="<%= s.name %>"><%= s.name %> - Rp <%= s.price.toLocaleString("id-ID") %></option>
+                <% }) %>
               </select>
             </div>
           </div>
+          <% if (addOns && addOns.length > 0) { %>
           <div class="form-group">
             <label class="form-label form-label--upper">Layanan Tambahan (Add-Ons)</label>
             <div class="addon-tags">
-              <label class="addon-tag"><input type="checkbox" value="Unyellowing" /> Unyellowing (Rp 50.000)</label>
-              <label class="addon-tag"><input type="checkbox" value="Glue & Repress" /> Glue & Repress (Rp 60.000)</label>
-              <label class="addon-tag"><input type="checkbox" value="Leather Polish" /> Leather Polish (Rp 30.000)</label>
-              <label class="addon-tag"><input type="checkbox" value="Deodorizer" /> Deodorizer (Rp 15.000)</label>
+              <% addOns.forEach(s => { %>
+                <label class="addon-tag"><input type="checkbox" value="<%= s.name %>" /> <%= s.name %> (+Rp <%= s.price.toLocaleString("id-ID") %>)</label>
+              <% }) %>
             </div>
           </div>
+          <% } %>
         </div>
       </div>
 
@@ -200,7 +273,7 @@
 
         <div class="order-summary-estimate">
           <i class="fa-regular fa-clock"></i> ESTIMASI SELESAI
-          <span class="estimate-badge">3-5 Hari Kerja</span>
+          <span class="estimate-badge">0 Hari</span>
         </div>
 
         <div class="order-summary-divider"></div>

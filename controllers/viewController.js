@@ -50,8 +50,22 @@ exports.renderCustomerDashboard = async (req, res) => {
     }
 };
 
-exports.renderCustomerCreateOrder = (req, res) => {
-    res.render("customer/create-order", { activePage: "dashboard" });
+exports.renderCustomerCreateOrder = async (req, res) => {
+    try {
+        const services = await Service.find().sort("name");
+        
+        const mainServices = services.filter(s => s.category !== "Additional Cost");
+        const addOns = services.filter(s => s.category === "Additional Cost");
+
+        res.render("customer/create-order", { 
+            activePage: "dashboard",
+            mainServices,
+            addOns
+        });
+    } catch (err) {
+        console.error("Create Order Error:", err);
+        res.status(500).render("error", { message: "Gagal memuat form pemesanan." });
+    }
 };
 
 exports.renderCustomerMyOrders = async (req, res) => {
