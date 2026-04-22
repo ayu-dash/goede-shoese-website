@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const User = require("../models/User");
+const Service = require("../models/Service");
 
 exports.renderIndex = (req, res) => res.render("index");
 
@@ -188,6 +189,37 @@ exports.renderAdminDashboard = async (req, res) => {
     } catch (err) {
         console.error("Dashboard Error:", err);
         res.status(500).render("error", { message: "Gagal memuat dashboard admin." });
+    }
+};
+
+exports.renderAdminServices = async (req, res) => {
+    try {
+        const services = await Service.find().sort("-createdAt");
+
+        // Prepare counts per category
+        const categories = {
+            "Menu Treatment": 0,
+            "Reglue & Repair": 0,
+            "Helmet Treatment": 0,
+            "Bag & Luggage": 0,
+            "Repaint": 0,
+            "Additional Cost": 0
+        };
+
+        services.forEach(service => {
+            if (categories[service.category] !== undefined) {
+                categories[service.category]++;
+            }
+        });
+
+        res.render("admin/services", { 
+            activePage: "services", 
+            services,
+            categories 
+        });
+    } catch (err) {
+        console.error("Services Error:", err);
+        res.status(500).render("error", { message: "Gagal memuat halaman layanan." });
     }
 };
 

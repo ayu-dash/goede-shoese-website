@@ -9,30 +9,30 @@
   <!-- Top Row -->
   <div class="cat-card large navy">
     <h3>Menu Treatment</h3>
-    <div class="badge">12 LAYANAN</div>
+    <div class="badge"><%= categories["Menu Treatment"] %> LAYANAN</div>
   </div>
   <div class="cat-card medium gray">
     <h3>Helmet Treatment</h3>
-    <div class="badge">12 LAYANAN</div>
+    <div class="badge"><%= categories["Helmet Treatment"] %> LAYANAN</div>
   </div>
   
   <!-- Bottom Row -->
   <div class="service-cat-grid-bottom">
     <div class="cat-card orange-light">
       <h3>Reglue &<br>Repair</h3>
-      <div class="badge">6 LAYANAN</div>
+      <div class="badge"><%= categories["Reglue & Repair"] %> LAYANAN</div>
     </div>
     <div class="cat-card gray">
       <h3>Additional<br>Cost</h3>
-      <div class="badge">5 LAYANAN</div>
+      <div class="badge"><%= categories["Additional Cost"] %> LAYANAN</div>
     </div>
     <div class="cat-card blue-light">
       <h3>Bag &<br>Luggage</h3>
-      <div class="badge">9 LAYANAN</div>
+      <div class="badge"><%= categories["Bag & Luggage"] %> LAYANAN</div>
     </div>
     <div class="cat-card white-border">
       <h3>Repaint</h3>
-      <div class="badge">4 LAYANAN</div>
+      <div class="badge"><%= categories["Repaint"] %> LAYANAN</div>
     </div>
   </div>
 </div>
@@ -59,54 +59,33 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td style="font-weight: 700; color: var(--navy-dark);">Deep Clean Regular</td>
-          <td><span class="badge badge-layanan-gray">MENU TREATMENT</span></td>
-          <td style="font-weight: 700; color: #0D47A1;">Rp 40.000</td>
-          <td style="color: var(--text-secondary);"><i class="fa-regular fa-clock"></i> 1-2 Minggu</td>
-          <td>
-            <div class="action-buttons" style="justify-content: flex-end;">
-              <button class="edit" onclick="openModal('editServiceModal')"><i class="fa-regular fa-pen-to-square"></i></button>
-              <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td style="font-weight: 700; color: var(--navy-dark);">Leather Repaint</td>
-          <td><span class="badge badge-layanan-orange">REPAINT</span></td>
-          <td style="font-weight: 700; color: #0D47A1;">Rp 120.000</td>
-          <td style="color: var(--text-secondary);"><i class="fa-regular fa-clock"></i> 1 Hari</td>
-          <td>
-            <div class="action-buttons" style="justify-content: flex-end;">
-              <button class="edit" onclick="openModal('editServiceModal')"><i class="fa-regular fa-pen-to-square"></i></button>
-              <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td style="font-weight: 700; color: var(--navy-dark);">Unyellowing Boost</td>
-          <td><span class="badge badge-layanan-blue">BAG & LUGGAGE</span></td>
-          <td style="font-weight: 700; color: #0D47A1;">Rp 65.000</td>
-          <td style="color: var(--text-secondary);"><i class="fa-regular fa-clock"></i> 2-4 Hari</td>
-          <td>
-            <div class="action-buttons" style="justify-content: flex-end;">
-              <button class="edit" onclick="openModal('editServiceModal')"><i class="fa-regular fa-pen-to-square"></i></button>
-              <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td style="font-weight: 700; color: var(--navy-dark);">Helmet Sanitization</td>
-          <td><span class="badge badge-layanan-gray">HELMET</span></td>
-          <td style="font-weight: 700; color: #0D47A1;">Rp 55.000</td>
-          <td style="color: var(--text-secondary);"><i class="fa-regular fa-clock"></i> 1-2 Hari</td>
-          <td>
-            <div class="action-buttons" style="justify-content: flex-end;">
-              <button class="edit" onclick="openModal('editServiceModal')"><i class="fa-regular fa-pen-to-square"></i></button>
-              <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
-            </div>
-          </td>
-        </tr>
+        <% if (services && services.length > 0) { %>
+          <% services.forEach(service => { 
+                let badgeClass = "badge-layanan-gray";
+                if (service.category === "Reglue & Repair") badgeClass = "badge-layanan-orange";
+                else if (service.category === "Repaint") badgeClass = "badge-layanan-orange";
+                else if (service.category === "Bag & Luggage") badgeClass = "badge-layanan-blue";
+          %>
+            <tr>
+              <td style="font-weight: 700; color: var(--navy-dark);"><%= service.name %></td>
+              <td><span class="badge <%= badgeClass %>"><%= service.category.toUpperCase() %></span></td>
+              <td style="font-weight: 700; color: #0D47A1;">Rp <%= service.price.toLocaleString("id-ID") %></td>
+              <td style="color: var(--text-secondary);"><i class="fa-regular fa-clock"></i> <%= service.estimatedTimeMin %>-<%= service.estimatedTimeMax %> <%= service.estimatedTimeUnit %></td>
+              <td>
+                <% const editClick = `onclick="openEditModal('${service._id}', '${service.name}', '${service.category}', ${service.price}, ${service.estimatedTimeMin}, ${service.estimatedTimeMax}, '${service.estimatedTimeUnit}')"`; %>
+                <% const delClick = `onclick="deleteService('${service._id}')"`; %>
+                <div class="action-buttons" style="justify-content: flex-end;">
+                  <button class="edit" <%- editClick %>><i class="fa-regular fa-pen-to-square"></i></button>
+                  <button class="delete" <%- delClick %>><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Belum ada layanan terdaftar.</td>
+          </tr>
+        <% } %>
       </tbody>
     </table>
   </div>
@@ -126,37 +105,41 @@
 <div class="modal-overlay" id="addServiceModal" onclick="closeModal(event, 'addServiceModal')">
   <div class="modal-content" style="max-width: 500px; padding: 32px;">
     <h3 class="modal-title" style="color: #0D47A1; margin-bottom: 24px; font-size: 20px;">Tambah Layanan Baru</h3>
-    <form onsubmit="event.preventDefault(); closeModalRaw('addServiceModal');">
+    <form id="addServiceForm" onsubmit="createService(event)">
       
       <div class="modal-form-group" style="margin-bottom: 20px;">
         <label class="modal-label">NAMA LAYANAN</label>
-        <input type="text" class="modal-input" placeholder="Contoh: Deep Clean Regular">
+        <input type="text" name="name" class="modal-input" placeholder="Contoh: Deep Clean Regular" required>
       </div>
       
       <div class="modal-form-grid" style="gap: 16px; margin-bottom: 20px;">
         <div class="modal-form-group">
           <label class="modal-label">KATEGORI</label>
-          <select class="modal-input" style="color: var(--text-secondary);">
+          <select name="category" class="modal-input" style="color: var(--text-secondary);" required>
             <option value="" disabled selected>Pilih Kategori</option>
-            <option>Menu Treatment</option>
-            <option>Reglue & Repair</option>
-            <option>Helmet Treatment</option>
+            <option value="Menu Treatment">Menu Treatment</option>
+            <option value="Main Treatment">Main Treatment</option>
+            <option value="Reglue & Repair">Reglue & Repair</option>
+            <option value="Helmet Treatment">Helmet Treatment</option>
+            <option value="Bag & Luggage">Bag & Luggage</option>
+            <option value="Repaint">Repaint</option>
+            <option value="Additional Cost">Additional Cost</option>
           </select>
         </div>
         <div class="modal-form-group">
           <label class="modal-label">HARGA (RP)</label>
-          <input type="number" class="modal-input" placeholder="40000">
+          <input type="number" name="price" class="modal-input" placeholder="40000" required>
         </div>
       </div>
       
       <div class="modal-form-group" style="margin-bottom: 32px;">
         <label class="modal-label">ESTIMASI WAKTU</label>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-          <input type="number" class="modal-input" placeholder="Min" style="padding: 10px 12px;">
-          <input type="number" class="modal-input" placeholder="Max" style="padding: 10px 12px;">
-          <select class="modal-input" style="padding: 10px 12px;">
-            <option>Hari</option>
-            <option>Minggu</option>
+          <input type="number" name="estimatedTimeMin" class="modal-input" placeholder="Min" style="padding: 10px 12px;" required>
+          <input type="number" name="estimatedTimeMax" class="modal-input" placeholder="Max" style="padding: 10px 12px;" required>
+          <select name="estimatedTimeUnit" class="modal-input" style="padding: 10px 12px;" required>
+            <option value="Hari">Hari</option>
+            <option value="Minggu">Minggu</option>
           </select>
         </div>
       </div>
@@ -172,36 +155,41 @@
 <!-- Modal Edit Service -->
 <div class="modal-overlay" id="editServiceModal" onclick="closeModal(event, 'editServiceModal')">
   <div class="modal-content" style="max-width: 500px; padding: 32px;">
-    <h3 class="modal-title" style="color: #0D47A1; margin-bottom: 24px; font-size: 20px;">Tambah Layanan Baru</h3> <!-- Note: Figma has 'Tambah Layanan Baru' for Edit too by mistake, I'll fix it to Edit Layanan as best practice -->
-    <form onsubmit="event.preventDefault(); closeModalRaw('editServiceModal');">
-      
+    <h3 class="modal-title" style="color: #0D47A1; margin-bottom: 24px; font-size: 20px;">Edit Layanan</h3>
+    <form id="editServiceForm" onsubmit="updateService(event)">
+      <input type="hidden" name="id" id="editServiceId">
       <div class="modal-form-group" style="margin-bottom: 20px;">
         <label class="modal-label">NAMA LAYANAN</label>
-        <input type="text" class="modal-input" value="Deep Clean Shoes">
+        <input type="text" name="name" id="editServiceName" class="modal-input" required>
       </div>
       
       <div class="modal-form-grid" style="gap: 16px; margin-bottom: 20px;">
         <div class="modal-form-group">
           <label class="modal-label">KATEGORI</label>
-          <select class="modal-input">
-            <option selected>Main Treatment</option>
-            <option>Reglue & Repair</option>
+          <select name="category" id="editServiceCategory" class="modal-input" required>
+            <option value="Menu Treatment">Menu Treatment</option>
+            <option value="Main Treatment">Main Treatment</option>
+            <option value="Reglue & Repair">Reglue & Repair</option>
+            <option value="Helmet Treatment">Helmet Treatment</option>
+            <option value="Bag & Luggage">Bag & Luggage</option>
+            <option value="Repaint">Repaint</option>
+            <option value="Additional Cost">Additional Cost</option>
           </select>
         </div>
         <div class="modal-form-group">
           <label class="modal-label">HARGA (RP)</label>
-          <input type="number" class="modal-input" value="120000">
+          <input type="number" name="price" id="editServicePrice" class="modal-input" required>
         </div>
       </div>
       
       <div class="modal-form-group" style="margin-bottom: 32px;">
         <label class="modal-label">ESTIMASI WAKTU</label>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-          <input type="number" class="modal-input" value="1" style="padding: 10px 12px;">
-          <input type="number" class="modal-input" value="2" style="padding: 10px 12px;">
-          <select class="modal-input" style="padding: 10px 12px;">
-            <option selected>Hari</option>
-            <option>Minggu</option>
+          <input type="number" name="estimatedTimeMin" id="editServiceTimeMin" class="modal-input" style="padding: 10px 12px;" required>
+          <input type="number" name="estimatedTimeMax" id="editServiceTimeMax" class="modal-input" style="padding: 10px 12px;" required>
+          <select name="estimatedTimeUnit" id="editServiceTimeUnit" class="modal-input" style="padding: 10px 12px;" required>
+            <option value="Hari">Hari</option>
+            <option value="Minggu">Minggu</option>
           </select>
         </div>
       </div>
@@ -227,6 +215,87 @@
 
   function closeModalRaw(id) {
     document.getElementById(id).classList.remove('active');
+  }
+
+  async function createService(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Konversi tipe data agar sesuai mongoose schema (menjadi nomor)
+    data.price = Number(data.price);
+    data.estimatedTimeMin = Number(data.estimatedTimeMin);
+    data.estimatedTimeMax = Number(data.estimatedTimeMax);
+
+    try {
+      const res = await fetch('/api/services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const errorData = await res.json();
+        alert("Gagal menambahkan layanan: " + (errorData.message || ""));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function openEditModal(id, name, category, price, timeMin, timeMax, timeUnit) {
+    document.getElementById('editServiceId').value = id;
+    document.getElementById('editServiceName').value = name;
+    document.getElementById('editServiceCategory').value = category;
+    document.getElementById('editServicePrice').value = price;
+    document.getElementById('editServiceTimeMin').value = timeMin;
+    document.getElementById('editServiceTimeMax').value = timeMax;
+    document.getElementById('editServiceTimeUnit').value = timeUnit;
+    openModal('editServiceModal');
+  }
+
+  async function updateService(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+    const id = data.id;
+    delete data.id;
+
+    data.price = Number(data.price);
+    data.estimatedTimeMin = Number(data.estimatedTimeMin);
+    data.estimatedTimeMax = Number(data.estimatedTimeMax);
+
+    try {
+      const res = await fetch(`/api/services/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const errorData = await res.json();
+        alert("Gagal memperbarui layanan: " + (errorData.message || ""));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function deleteService(id) {
+    if (confirm("Apakah anda yakin ingin menghapus layanan ini?")) {
+      try {
+        const res = await fetch(`/api/services/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          alert("Gagal menghapus layanan");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
   }
 </script>
 
