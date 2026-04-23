@@ -172,7 +172,9 @@
           <td style="color: var(--text-secondary)">12 Jan 2023</td>
           <td>
             <div class="action-buttons" style="justify-content: flex-end">
-              <button class="edit"><i class="fa-regular fa-eye"></i></button>
+              <button class="edit" onclick="openCustomerDetail()">
+                <i class="fa-regular fa-eye"></i>
+              </button>
               <button class="delete">
                 <i class="fa-regular fa-trash-can"></i>
               </button>
@@ -229,7 +231,9 @@
           <td style="color: var(--text-secondary)">05 Feb 2024</td>
           <td>
             <div class="action-buttons" style="justify-content: flex-end">
-              <button class="edit"><i class="fa-regular fa-eye"></i></button>
+              <button class="edit" onclick="openCustomerDetail()">
+                <i class="fa-regular fa-eye"></i>
+              </button>
               <button class="delete">
                 <i class="fa-regular fa-trash-can"></i>
               </button>
@@ -286,7 +290,9 @@
           <td style="color: var(--text-secondary)">28 Nov 2023</td>
           <td>
             <div class="action-buttons" style="justify-content: flex-end">
-              <button class="edit"><i class="fa-regular fa-eye"></i></button>
+              <button class="edit" onclick="openCustomerDetail()">
+                <i class="fa-regular fa-eye"></i>
+              </button>
               <button class="delete">
                 <i class="fa-regular fa-trash-can"></i>
               </button>
@@ -307,7 +313,7 @@
 </div>
 
 <script>
-  // Simple JS to update the UI text of the toggle label when checked/unchecked
+  // Toggle label text
   document.addEventListener("DOMContentLoaded", () => {
     const toggles = document.querySelectorAll(".toggle-switch input");
     toggles.forEach((toggle) => {
@@ -321,6 +327,124 @@
       });
     });
   });
+
+  // Customer Detail Modal
+  function openCustomerDetail() {
+    document.getElementById("customerDetailModal").classList.add("active");
+  }
+  function closeModal(e, id) {
+    if (e.target.id === id) {
+      document.getElementById(id).classList.remove("active");
+    }
+  }
+  function closeModalRaw(id) {
+    document.getElementById(id).classList.remove("active");
+  }
 </script>
+
+<!-- Modal Detail Customer -->
+<div
+  class="modal-overlay"
+  id="customerDetailModal"
+  onclick="closeModal(event, 'customerDetailModal')"
+>
+  <div class="modal-content modal-content--lg">
+    <!-- Header -->
+    <div class="cust-detail-header">
+      <img
+        src="https://ui-avatars.com/api/?name=Arini+Sulistiowati&background=0d47a1&color=fff&size=80"
+        class="cust-detail-avatar"
+        alt="Avatar"
+      />
+      <div class="cust-detail-info">
+        <div class="cust-detail-name-row">
+          <h3>Arini Sulistiowati</h3>
+          <span class="badge badge-layanan-gray">#CST-9021</span>
+        </div>
+        <div class="cust-detail-meta">
+          <span><i class="fa-regular fa-envelope"></i> arini.s@gmail.com</span>
+          <span><i class="fa-solid fa-phone"></i> +62 812-3456-7890</span>
+          <span><i class="fa-regular fa-calendar"></i> Joined 12 Oct 2022</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="cust-detail-stats">
+      <div class="cust-detail-stat">
+        <span class="cust-detail-stat-label">TOTAL PESANAN</span>
+        <span class="cust-detail-stat-value">14</span>
+      </div>
+      <div class="cust-detail-stat">
+        <span class="cust-detail-stat-label">TOTAL PENGELUARAN</span>
+        <span class="cust-detail-stat-value">Rp 4.250.000</span>
+      </div>
+      <div class="cust-detail-stat">
+        <span class="cust-detail-stat-label">RATA-RATA PENGELUARAN</span>
+        <span class="cust-detail-stat-value">Rp 303.571</span>
+      </div>
+    </div>
+
+    <!-- Order History -->
+    <h4 class="cust-detail-section-title">Riwayat Pesanan</h4>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ORDER ID</th>
+          <th>TANGGAL PESANAN</th>
+          <th>JENIS LAYANAN</th>
+          <th>STATUS</th>
+          <th>NOMINAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cust-detail-order-id">#ORD-5521</td>
+          <td>24 May 2023</td>
+          <td><span class="badge badge-layanan-orange">REPAINT</span></td>
+          <td><span class="badge badge-processing">Diantar</span></td>
+          <td>Rp 450.000</td>
+        </tr>
+        <tr>
+          <td class="cust-detail-order-id">#ORD-5488</td>
+          <td>18 May 2023</td>
+          <td><span class="badge badge-layanan-gray">DEEP CLEAN</span></td>
+          <td><span class="badge badge-completed">Selesai</span></td>
+          <td>Rp 120.000</td>
+        </tr>
+        <tr>
+          <td class="cust-detail-order-id">#ORD-5310</td>
+          <td>02 May 2023</td>
+          <td>
+            <span class="badge badge-layanan-blue">UNYELLOWING</span>
+            <span class="badge badge-layanan-gray">HEEL REPAIR</span>
+          </td>
+          <td><span class="badge badge-completed">Selesai</span></td>
+          <td>Rp 850.000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">...</button>
+      <button class="page-btn">5</button>
+      <button class="page-btn">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="cust-detail-footer">
+      <button
+        class="btn btn-primary"
+        onclick="closeModalRaw('customerDetailModal')"
+      >
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
 
 <%- include('../partials/dashboard-foot') %>

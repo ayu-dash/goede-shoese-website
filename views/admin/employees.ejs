@@ -1,0 +1,391 @@
+<%- include('../partials/dashboard-head') %>
+
+<div class="page-header" style="margin-bottom: 32px">
+  <h1 class="page-title page-title--xl">Manajemen Karyawan</h1>
+</div>
+
+<!-- STATS CARDS -->
+<div
+  class="admin-stats-grid"
+  style="grid-template-columns: repeat(3, 1fr); margin-bottom: 32px"
+>
+  <div class="admin-stat-card">
+    <div class="stat-icon"><i class="fa-solid fa-user-group"></i></div>
+    <div>
+      <div class="stat-label">TOTAL STAFF</div>
+      <div class="stat-value">24</div>
+    </div>
+  </div>
+  <div class="admin-stat-card">
+    <div class="stat-icon" style="color: #16a34a">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <div>
+      <div class="stat-label">AKTIF</div>
+      <div class="stat-value">18</div>
+    </div>
+  </div>
+  <div class="admin-stat-card">
+    <div class="stat-icon" style="color: #ef4444">
+      <i class="fa-solid fa-circle-xmark"></i>
+    </div>
+    <div>
+      <div class="stat-label">TIDAK AKTIF</div>
+      <div class="stat-value">6</div>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOYEE TABLE -->
+<div class="admin-panel">
+  <div class="filter-bar">
+    <div class="search-wrapper">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Filter berdasarkan nama..."
+      />
+    </div>
+    <button class="btn btn-primary" onclick="openModal('addEmployeeModal')">
+      + Tambah Karyawan
+    </button>
+  </div>
+
+  <div class="admin-table-wrapper" style="overflow-x: auto">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>NAMA LENGKAP</th>
+          <th>KONTAK</th>
+          <th>STATUS</th>
+          <th style="text-align: right">AKSI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="table-client-info">
+              <img
+                src="https://ui-avatars.com/api/?name=Bambang+Susanto&background=random"
+                class="table-client-avatar"
+                alt="User"
+              />
+              <div>
+                <span class="table-client-name">Bambang Susanto</span>
+                <span class="table-client-sub" style="opacity: 0.7"
+                  >ID: #MST-001</span
+                >
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>
+              <span
+                style="
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: var(--text-secondary);
+                "
+                >bambang.s@pristine.com</span
+              >
+            </div>
+            <div>
+              <span style="font-size: 11px; color: #cbd5e1"
+                >+62 812 3456 7890</span
+              >
+            </div>
+          </td>
+          <td>
+            <label class="toggle-switch">
+              <input type="checkbox" checked />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">AKTIF</span>
+            </label>
+          </td>
+          <td>
+            <div class="action-buttons" style="justify-content: flex-end">
+              <button class="edit">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="delete">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="table-client-info">
+              <img
+                src="https://ui-avatars.com/api/?name=Siska+Amelia&background=random"
+                class="table-client-avatar"
+                alt="User"
+              />
+              <div>
+                <span class="table-client-name">Siska Amelia</span>
+                <span class="table-client-sub" style="opacity: 0.7"
+                  >ID: #MST-002</span
+                >
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>
+              <span
+                style="
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: var(--text-secondary);
+                "
+                >siska.a@pristine.com</span
+              >
+            </div>
+            <div>
+              <span style="font-size: 11px; color: #cbd5e1"
+                >+62 811 9876 5432</span
+              >
+            </div>
+          </td>
+          <td>
+            <label class="toggle-switch">
+              <input type="checkbox" checked />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">AKTIF</span>
+            </label>
+          </td>
+          <td>
+            <div class="action-buttons" style="justify-content: flex-end">
+              <button class="edit">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="delete">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="table-client-info">
+              <img
+                src="https://ui-avatars.com/api/?name=Rudi+Hermawan&background=random"
+                class="table-client-avatar"
+                alt="User"
+              />
+              <div>
+                <span class="table-client-name">Rudi Hermawan</span>
+                <span class="table-client-sub" style="opacity: 0.7"
+                  >ID: #MST-003</span
+                >
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>
+              <span
+                style="
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: var(--text-secondary);
+                "
+                >rudi.h@pristine.com</span
+              >
+            </div>
+            <div>
+              <span style="font-size: 11px; color: #cbd5e1"
+                >+62 856 2233 4455</span
+              >
+            </div>
+          </td>
+          <td>
+            <label class="toggle-switch">
+              <input type="checkbox" />
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">NON-AKTIF</span>
+            </label>
+          </td>
+          <td>
+            <div class="action-buttons" style="justify-content: flex-end">
+              <button class="edit">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="delete">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">3</button>
+    <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Modal Tambah Karyawan Baru -->
+<div
+  class="modal-overlay"
+  id="addEmployeeModal"
+  onclick="closeModal(event, 'addEmployeeModal')"
+>
+  <div class="modal-content" style="max-width: 380px; padding: 28px 24px">
+    <h3
+      class="modal-title"
+      style="
+        color: #0d47a1;
+        margin-bottom: 20px;
+        font-size: 18px;
+        text-align: center;
+      "
+    >
+      Tambah Karyawan Baru
+    </h3>
+
+    <!-- Photo Upload -->
+    <div class="emp-photo-upload" style="margin-bottom: 20px">
+      <div
+        class="emp-photo-circle"
+        style="width: 64px; height: 64px; font-size: 22px"
+      >
+        <i class="fa-regular fa-user"></i>
+        <span
+          class="emp-photo-badge"
+          style="width: 20px; height: 20px; font-size: 8px"
+          ><i class="fa-solid fa-camera"></i
+        ></span>
+      </div>
+      <span class="emp-photo-label">FOTO PROFIL</span>
+      <span class="emp-photo-sub">PNG / JPG / JPEG</span>
+    </div>
+
+    <form id="addEmployeeForm">
+      <div class="modal-form-group" style="margin-bottom: 14px">
+        <label class="modal-label">NAMA LENGKAP</label>
+        <div class="modal-input-icon">
+          <i class="fa-regular fa-user"></i>
+          <input
+            type="text"
+            name="name"
+            class="modal-input"
+            style="padding: 10px 14px 10px 36px"
+            placeholder="Contoh: Adrian Pratama"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="modal-form-group" style="margin-bottom: 14px">
+        <label class="modal-label">EMAIL</label>
+        <div class="modal-input-icon">
+          <i class="fa-regular fa-envelope"></i>
+          <input
+            type="email"
+            name="email"
+            class="modal-input"
+            style="padding: 10px 14px 10px 36px"
+            placeholder="email@perusahaan.com"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="modal-form-group" style="margin-bottom: 14px">
+        <label class="modal-label">NOMOR TELEPON</label>
+        <div class="modal-input-icon">
+          <i class="fa-solid fa-phone"></i>
+          <input
+            type="tel"
+            name="phone"
+            class="modal-input"
+            style="padding: 10px 14px 10px 36px"
+            placeholder="0812..."
+            required
+          />
+        </div>
+      </div>
+
+      <div class="modal-form-group" style="margin-bottom: 24px">
+        <label class="modal-label">KATA SANDI</label>
+        <div class="modal-input-icon">
+          <i class="fa-solid fa-lock"></i>
+          <input
+            type="password"
+            name="password"
+            class="modal-input"
+            style="padding: 10px 14px 10px 36px"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+      </div>
+
+      <div
+        class="modal-actions"
+        style="flex-direction: column; gap: 8px; margin-top: 0"
+      >
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="
+            width: 100%;
+            background: #0d47a1;
+            border-radius: 8px;
+            padding: 12px;
+          "
+        >
+          Simpan Karyawan
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost-cancel"
+          style="width: 100%; font-weight: 700"
+          onclick="closeModalRaw('addEmployeeModal')"
+        >
+          Batal
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Toggle label text
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggles = document.querySelectorAll(".toggle-switch input");
+    toggles.forEach((toggle) => {
+      toggle.addEventListener("change", function () {
+        const span = this.parentElement.querySelector(".toggle-label");
+        if (this.checked) {
+          span.textContent = "AKTIF";
+        } else {
+          span.textContent = "NON-AKTIF";
+        }
+      });
+    });
+  });
+
+  function openModal(id) {
+    document.getElementById(id).classList.add("active");
+  }
+  function closeModal(e, id) {
+    if (e.target.id === id) {
+      document.getElementById(id).classList.remove("active");
+    }
+  }
+  function closeModalRaw(id) {
+    document.getElementById(id).classList.remove("active");
+  }
+</script>
+
+<%- include('../partials/dashboard-foot') %>

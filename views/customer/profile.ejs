@@ -81,7 +81,9 @@
     <% user.addresses.forEach(addr => { %>
       <div class="address-card">
         <div class="address-card-actions">
-          <button onclick='prepareEditAddress(<%= JSON.stringify(addr) %>)'><i class="fa-solid fa-pen"></i></button>
+          <button data-addr='<%= JSON.stringify(addr) %>' onclick="prepareEditAddress(JSON.parse(this.getAttribute('data-addr')))">
+            <i class="fa-solid fa-pen"></i>
+          </button>
           <button><i class="fa-solid fa-trash-can"></i></button>
         </div>
         <span class="address-badge <%= addr.label.toUpperCase() === 'KANTOR' ? 'gray' : '' %>"><%= addr.label.toUpperCase() %></span>

@@ -1,0 +1,284 @@
+<%- include('../partials/dashboard-head') %>
+
+<div class="page-header" style="margin-bottom: 32px">
+  <h1 class="page-title page-title--xl">Manajemen Operasional</h1>
+</div>
+
+<div class="ops-layout">
+  <!-- LEFT COLUMN -->
+  <div class="ops-left">
+    <!-- REKENING BANK -->
+    <div class="admin-panel ops-bank-section">
+      <h4 class="ops-section-label">REKENING BANK</h4>
+
+      <div class="ops-bank-card">
+        <div class="ops-bank-card-header">
+          <span class="ops-bank-name">BCA</span>
+          <div class="ops-bank-actions">
+            <button class="ops-bank-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+            <button class="ops-bank-btn">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+        </div>
+        <div class="ops-bank-detail">
+          <span class="ops-bank-label">ACCOUNT NUMBER</span>
+          <span class="ops-bank-number">8820 4419 2201</span>
+        </div>
+        <div class="ops-bank-detail">
+          <span class="ops-bank-label">ACCOUNT HOLDER</span>
+          <span class="ops-bank-holder">PT. GOEDE SHOES</span>
+        </div>
+      </div>
+
+      <button class="ops-add-bank-btn">+ Tambah Rekening</button>
+    </div>
+
+    <!-- TARIF PENGIRIMAN -->
+    <div class="admin-panel ops-tarif-section">
+      <h4 class="ops-section-label">TARIF PENGIRIMAN</h4>
+      <div class="ops-tarif-display">
+        <span class="ops-tarif-value">Rp 10.000</span>
+        <span class="ops-tarif-unit">/km</span>
+      </div>
+      <button class="ops-edit-tarif-btn" onclick="openModal('editTarifModal')">
+        <i class="fa-solid fa-pen"></i> Edit Tarif
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="ops-right">
+    <div class="admin-panel ops-store-section" id="storePanel">
+      <h4 class="ops-section-label">LOKASI TOKO</h4>
+
+      <!-- View Mode -->
+      <div class="ops-store-view" id="storeViewMode">
+        <div class="ops-form-group">
+          <label class="ops-field-label">NAMA TOKO</label>
+          <div class="ops-field-value-box">Goede HQ - Senopati</div>
+        </div>
+
+        <div class="ops-form-group">
+          <label class="ops-field-label">ALAMAT TOKO</label>
+          <div class="ops-field-value-box">
+            Jl. Senopati No.41, RT.6/RW.3, Selong, Kec. Kby. Baru, Kota Jakarta
+            Selatan, Daerah Khusus Ibukota Jakarta 12110
+          </div>
+        </div>
+
+        <div class="ops-form-row">
+          <div class="ops-form-group">
+            <label class="ops-field-label">WAKTU BUKA</label>
+            <div class="ops-field-value-box ops-field-icon-right">
+              09:00
+              <i class="fa-regular fa-clock"></i>
+            </div>
+          </div>
+          <div class="ops-form-group">
+            <label class="ops-field-label">WAKTU TUTUP</label>
+            <div class="ops-field-value-box ops-field-icon-right">
+              21:00
+              <i class="fa-regular fa-clock"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="ops-form-row">
+          <div class="ops-form-group">
+            <label class="ops-field-label">NOMOR TELEPON</label>
+            <div class="ops-field-value-box ops-field-icon-right">
+              +62 811-2345-6789
+              <i class="fa-solid fa-phone"></i>
+            </div>
+          </div>
+          <div class="ops-form-group">
+            <label class="ops-field-label">ALAMAT EMAIL</label>
+            <div class="ops-field-value-box ops-field-icon-right">
+              hq.senopati@goede.com
+              <i class="fa-regular fa-envelope"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Placeholder -->
+        <div class="ops-map-container">
+          <div class="ops-map-placeholder">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Peta Lokasi Toko</span>
+          </div>
+          <button
+            class="btn btn-primary ops-map-edit-btn"
+            onclick="toggleEditMode(true)"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div class="ops-store-edit" id="storeEditMode" style="display: none">
+        <div class="ops-form-group">
+          <label class="ops-field-label">NAMA TOKO</label>
+          <input
+            type="text"
+            class="ops-field-input"
+            id="edit-store-name"
+            value="Goede HQ - Senopati"
+          />
+        </div>
+
+        <div class="ops-form-group">
+          <label class="ops-field-label">ALAMAT TOKO</label>
+          <input
+            type="text"
+            class="ops-field-input"
+            id="edit-store-address"
+            value="Jl. Senopati No.41, RT.6/RW.3, Selong, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12110"
+          />
+        </div>
+
+        <div class="ops-form-row">
+          <div class="ops-form-group">
+            <label class="ops-field-label">WAKTU BUKA</label>
+            <div class="ops-field-input-icon">
+              <input
+                type="time"
+                class="ops-field-input"
+                id="edit-store-open"
+                value="09:00"
+              />
+              <i class="fa-regular fa-clock"></i>
+            </div>
+          </div>
+          <div class="ops-form-group">
+            <label class="ops-field-label">WAKTU TUTUP</label>
+            <div class="ops-field-input-icon">
+              <input
+                type="time"
+                class="ops-field-input"
+                id="edit-store-close"
+                value="21:00"
+              />
+              <i class="fa-regular fa-clock"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="ops-form-row">
+          <div class="ops-form-group">
+            <label class="ops-field-label">NOMOR TELEPON</label>
+            <div class="ops-field-input-icon">
+              <input
+                type="tel"
+                class="ops-field-input"
+                id="edit-store-phone"
+                value="+62 811-2345-6789"
+              />
+              <i class="fa-solid fa-phone"></i>
+            </div>
+          </div>
+          <div class="ops-form-group">
+            <label class="ops-field-label">ALAMAT EMAIL</label>
+            <div class="ops-field-input-icon">
+              <input
+                type="email"
+                class="ops-field-input"
+                id="edit-store-email"
+                value="hq.senopati@goede.com"
+              />
+              <i class="fa-regular fa-envelope"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Placeholder -->
+        <div class="ops-map-container">
+          <div class="ops-map-placeholder">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Peta Lokasi Toko</span>
+          </div>
+          <div class="ops-edit-actions">
+            <button
+              class="btn btn-ghost-cancel"
+              onclick="toggleEditMode(false)"
+            >
+              Discard
+            </button>
+            <button class="btn btn-primary" onclick="toggleEditMode(false)">
+              <i class="fa-regular fa-circle-check"></i> Simpan Perubahan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Modal Edit Tarif -->
+<div
+  class="modal-overlay"
+  id="editTarifModal"
+  onclick="closeModal(event, 'editTarifModal')"
+>
+  <div class="modal-content" style="max-width: 400px; padding: 32px">
+    <h3
+      class="modal-title"
+      style="color: #0d47a1; margin-bottom: 24px; font-size: 20px"
+    >
+      Edit Tarif Pengiriman
+    </h3>
+    <form>
+      <div class="modal-form-group" style="margin-bottom: 24px">
+        <label class="modal-label">TARIF PER KM (Rp)</label>
+        <input type="number" class="modal-input" value="10000" required />
+      </div>
+      <div class="modal-actions" style="justify-content: flex-end; gap: 16px">
+        <button
+          type="button"
+          class="btn btn-ghost-cancel"
+          style="font-weight: 700"
+          onclick="closeModalRaw('editTarifModal')"
+        >
+          Batal
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="background: #0d47a1; border-radius: 8px"
+        >
+          Simpan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleEditMode(isEditing) {
+    document.getElementById("storeViewMode").style.display = isEditing
+      ? "none"
+      : "block";
+    document.getElementById("storeEditMode").style.display = isEditing
+      ? "block"
+      : "none";
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add("active");
+  }
+  function closeModal(e, id) {
+    if (e.target.id === id) {
+      document.getElementById(id).classList.remove("active");
+    }
+  }
+  function closeModalRaw(id) {
+    document.getElementById(id).classList.remove("active");
+  }
+</script>
+
+<%- include('../partials/dashboard-foot') %>
