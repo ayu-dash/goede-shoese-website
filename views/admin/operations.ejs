@@ -63,9 +63,9 @@
         </label>
       </div>
 
-      <div class="ops-midtrans-status" style="background: <%= settings.midtransConfig.isProduction ? '#fff1f2' : '#f0f9ff' %>; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
-        <div style="width: 10px; height: 10px; border-radius: 50%; background: <%= settings.midtransConfig.isProduction ? '#e11d48' : '#0284c7' %>"></div>
-        <span style="font-size: 11px; font-weight: 700; color: <%= settings.midtransConfig.isProduction ? '#e11d48' : '#0284c7' %>">
+      <div class="ops-midtrans-status" style="--status-bg: <%= settings.midtransConfig.isProduction ? '#fff1f2' : '#f0f9ff' %>; --status-color: <%= settings.midtransConfig.isProduction ? '#e11d48' : '#0284c7' %>; background: var(--status-bg); padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--status-color)"></div>
+        <span style="font-size: 11px; font-weight: 700; color: var(--status-color)">
           MODE: <%= settings.midtransConfig.isProduction ? 'PRODUCTION' : 'SANDBOX' %>
         </span>
       </div>
@@ -385,8 +385,12 @@
   </div>
 </div>
 
+<script id="bank-accounts-data" type="application/json">
+  <%- JSON.stringify(settings.bankAccounts) %>
+</script>
+
 <script>
-  let currentBankAccounts = <%- JSON.stringify(settings.bankAccounts) %>;
+  let currentBankAccounts = JSON.parse(document.getElementById('bank-accounts-data').textContent);
 
   function toggleEditMode(isEditing) {
     document.getElementById("storeViewMode").style.display = isEditing
