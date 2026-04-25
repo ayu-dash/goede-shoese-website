@@ -23,6 +23,29 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+const Settings = require("./models/Settings");
+const Service = require("./models/Service");
+
+// Global middleware to make settings available in all views (for footer, etc.)
+app.use(async (req, res, next) => {
+  try {
+    let settings = await Settings.findOne();
+    if (!settings) {
+      // Create default if not exists
+      settings = await Settings.create({});
+    }
+    res.locals.settings = settings;
+
+    // Fetch unique categories for footer
+    const categories = await Service.distinct("category", { category: { $ne: "Additional Cost" } });
+    res.locals.serviceCategories = categories.slice(0, 5);
+    
+    next();
+  } catch (err) {
+    console.error("Settings middleware error:", err);
+    next();
+  }
+});
 
 app.use("/", viewRoutes);
 app.use("/api/auth", authRoutes);

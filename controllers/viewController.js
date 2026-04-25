@@ -165,7 +165,12 @@ exports.renderAdminDashboard = async (req, res) => {
     const activeTreatments = await Order.countDocuments({
       status: { $in: ["pending", "pickup", "in-progress", "delivery"] },
     });
-    const newCustomers = await User.countDocuments({ role: "customer" });
+    const totalCustomers = await User.countDocuments({ role: "customer" });
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const newCustomersThisMonth = await User.countDocuments({
+      role: "customer",
+      createdAt: { $gte: startOfMonth }
+    });
 
     const recentOrders = await Order.find()
       .sort("-createdAt")
@@ -215,13 +220,37 @@ exports.renderAdminDashboard = async (req, res) => {
     });
     const maxMonthlyOrder = Math.max(...monthlyOrders, 1);
 
+    // FETCH STAFF ACTIVITY
+    const activitiesResult = await Order.aggregate([
+      { $unwind: "$statusHistory" },
+      { $sort: { "statusHistory.updatedAt": -1 } },
+      { $limit: 3 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "statusHistory.updatedBy",
+          foreignField: "_id",
+          as: "staff",
+        },
+      },
+      { $unwind: "$staff" },
+    ]);
+
+    const staffActivities = activitiesResult.map(a => ({
+      staffName: a.staff.name,
+      action: a.statusHistory.status.toUpperCase(),
+      shoeName: a.items[0]?.shoeName || 'Item',
+      timeAgo: a.statusHistory.updatedAt
+    }));
+
     res.render("admin/dashboard", {
       activePage: "dashboard",
       stats: {
         totalRevenue,
         totalOrders,
         activeTreatments,
-        newCustomers,
+        totalCustomers,
+        newCustomersThisMonth,
       },
       recentOrders,
       serviceStats: serviceStatsResult,
@@ -230,6 +259,7 @@ exports.renderAdminDashboard = async (req, res) => {
       maxMonthlyOrder,
       targetYear,
       availableYears,
+      staffActivities
     });
   } catch (err) {
     console.error("Dashboard Error:", err);

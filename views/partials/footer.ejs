@@ -4,7 +4,9 @@
       <!-- Brand Column -->
       <div class="footer-brand">
         <span class="logo footer-logo">GO<span class="logo-highlight">ED</span>E</span>
-        <p>Didirikan pada tahun 2024, Goede Shoes adalah workshop artisan yang didedikasikan untuk ilmu restorasi alas kaki. Kami menggabungkan kerajinan tradisional dengan teknologi tingkat laboratorium untuk menjaga pasangan sepatu paling berharga Anda.</p>
+        <p>Didirikan pada tahun 2024, Goede Shoes adalah workshop artisan yang didedikasikan untuk ilmu restorasi alas
+          kaki. Kami menggabungkan kerajinan tradisional dengan teknologi tingkat laboratorium untuk menjaga pasangan
+          sepatu paling berharga Anda.</p>
 
         <div class="social-links">
           <a href="#" class="social-btn" aria-label="Instagram">
@@ -20,15 +22,23 @@
       <div class="footer-col">
         <h4>Layanan</h4>
         <ul>
-          <li><a href="#">Pembersihan Sepatu</a></li>
-          <li><a href="#">Cat Ulang Artistik</a></li>
-          <li><a href="#">Restorasi Tas</a></li>
-          <li><a href="#">Perawatan Helm</a></li>
+          <% if (typeof serviceCategories !=='undefined' && serviceCategories.length> 0) { %>
+            <% serviceCategories.forEach(cat=> { %>
+              <li><a href="#">
+                  <%= cat %>
+                </a></li>
+              <% }); %>
+                <% } else { %>
+                  <li><a href="#">Pembersihan Sepatu</a></li>
+                  <li><a href="#">Cat Ulang Artistik</a></li>
+                  <li><a href="#">Restorasi Tas</a></li>
+                  <li><a href="#">Perawatan Helm</a></li>
+                  <% } %>
         </ul>
       </div>
 
       <!-- Hubungi Kami Column -->
-       <div class="footer-col">
+      <div class="footer-col">
         <h4>Hubungi Kami</h4>
         <ul class="footer-contact">
           <li>
@@ -38,7 +48,9 @@
               </span>
               <div>
                 <span class="contact-label">WhatsApp</span>
-                <span class="contact-value">+62 812-3456-7890</span>
+                <span class="contact-value">
+                  <%= settings.storeInfo.phone %>
+                </span>
               </div>
             </div>
           </li>
@@ -49,7 +61,9 @@
               </span>
               <div>
                 <span class="contact-label">Email</span>
-                <span class="contact-value">care@goede.com</span>
+                <span class="contact-value">
+                  <%= settings.storeInfo.email %>
+                </span>
               </div>
             </div>
           </li>
@@ -59,8 +73,13 @@
                 <i class="fa-solid fa-location-dot" style="font-size: 20px;"></i>
               </span>
               <div>
-                <span class="contact-label">Lab Pusat</span>
-                <span class="contact-value">Sudirman Central Business District, Jakarta</span>
+                <span class="contact-label">Alamat Toko</span>
+                <span class="contact-value">
+                  <%= settings.storeInfo.name %>
+                </span>
+                <span class="contact-sub-value" style="display: block; font-size: 11px; opacity: 0.7; margin-top: 2px;">
+                  <%= settings.storeInfo.address %>
+                </span>
               </div>
             </div>
           </li>
@@ -72,12 +91,10 @@
         <h4>Jam Operasional</h4>
         <ul class="footer-hours">
           <li>
-            <span class="hours-day">Senin - Jumat</span>
-            <span class="hours-time">09:00 – 21:00</span>
-          </li>
-          <li>
-            <span class="hours-day">Sabtu - Minggu</span>
-            <span class="hours-time">10:00 – 18:00</span>
+            <span class="hours-day">Setiap Hari</span>
+            <span class="hours-time">
+              <%= settings.storeInfo.openTime %> – <%= settings.storeInfo.closeTime %>
+            </span>
           </li>
         </ul>
       </div>
@@ -95,4 +112,5 @@
 
 <script src="/js/main.js"></script>
 </body>
+
 </html>

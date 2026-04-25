@@ -1,199 +1,235 @@
 <%- include('../partials/dashboard-head') %>
 
-<!-- STATS GRID -->
-<div class="admin-stats-grid">
-  <div class="admin-stat-card navy">
-    <div class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-    <div>
-      <div class="stat-label">TOTAL REVENUE</div>
-      <div class="stat-value">Rp <%= stats.totalRevenue.toLocaleString("id-ID") %></div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-    <div>
-      <div class="stat-label">TOTAL ORDERS</div>
-      <div class="stat-value"><%= stats.totalOrders.toLocaleString("id-ID") %></div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-paintbrush"></i></div>
-    <div>
-      <div class="stat-label">ACTIVE TREATMENTS</div>
-      <div class="stat-value"><%= stats.activeTreatments.toLocaleString("id-ID") %></div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-user-plus"></i></div>
-    <div>
-      <div class="stat-label">NEW CUSTOMERS</div>
-      <div class="stat-value"><%= stats.newCustomers.toLocaleString("id-ID") %></div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-    <div>
-      <div class="stat-label">TOTAL CUSTOMER</div>
-      <div class="stat-value">3,492</div>
-    </div>
-  </div>
-</div>
-
-<!-- BAR CHART MOCK -->
-<div class="admin-charts-row">
-  <div class="chart-header">
-    <div class="chart-title">
-      <h3>Analisis Pesanan</h3>
-      <p>VOLUME PESANAN PER BULAN</p>
-    </div>
-    <div class="chart-controls">
-      <div class="badge badge-layanan-gray"><span style="width:8px;height:8px;background:#0D47A1;border-radius:50%;display:inline-block;margin-right:6px;"></span>Tahun</div>
-      <select onchange="window.location.href='?year=' + this.value">
-        <% availableYears.forEach(year => { %>
-          <option value="<%= year %>" <%= targetYear === year ? 'selected' : '' %>><%= year %></option>
-        <% }) %>
-      </select>
-    </div>
-  </div>
-  
-  <div class="bar-chart-mock">
-    <% const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']; %>
-    <% if (typeof monthlyOrders !== 'undefined') { %>
-      <% monthlyOrders.forEach((count, index) => { %>
-        <% const heightPct = maxMonthlyOrder > 0 ? Math.round((count / maxMonthlyOrder) * 100) : 0; %>
-        <% const styleAttr = `style="height: ${heightPct > 0 ? heightPct : 0}%;"`; %>
-        <div class="bar-col <%= (heightPct === 100 && count > 0) ? 'active' : '' %>" <%- styleAttr %>>
-          <% if (count > 0) { %><span class="bar-tooltip"><%= count %></span><% } %>
-          <span class="bar-label"><%= months[index] %></span>
+  <!-- STATS GRID -->
+  <div class="admin-stats-grid">
+    <div class="admin-stat-card navy">
+      <div class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+      <div>
+        <div class="stat-label">TOTAL REVENUE</div>
+        <div class="stat-value">Rp <%= stats.totalRevenue.toLocaleString("id-ID") %>
         </div>
-      <% }) %>
-    <% } %>
-  </div>
-</div>
-
-<!-- BOTTOM GRID -->
-<div class="admin-grid-layout">
-  <!-- Transactions -->
-  <div class="admin-panel" style="overflow-x: auto;">
-    <div class="admin-panel-header">
-      <h3 class="admin-panel-title">Transaksi Terakhir</h3>
-      <a href="#" class="admin-link">Lihat Semua</a>
+      </div>
     </div>
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>ORDER ID</th>
-          <th>CUSTOMER</th>
-          <th>SERVICE</th>
-          <th>STATUS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (recentOrders && recentOrders.length > 0) { %>
-          <% recentOrders.forEach(order => { %>
-            <tr>
-              <td style="color: var(--text-secondary); font-weight: 600;"><%= order.orderId %></td>
-              <td>
-                <span class="table-client-name"><%= order.user ? order.user.name : "Unknown Customer" %></span>
-                <% if (order.items && order.items.length > 0) { %>
-                  <span class="table-client-sub"><%= order.items[0].shoeName %> <%= order.items.length > 1 ? `(+${order.items.length - 1} lainnya)` : '' %></span>
-                <% } else { %>
-                  <span class="table-client-sub">-</span>
-                <% } %>
-              </td>
-              <td><span class="badge badge-layanan-blue"><%= order.items && order.items.length > 0 ? order.items[0].serviceType : "-" %></span></td>
-              <td>
-                <% if (order.status === 'completed') { %>
-                  <span class="badge badge-completed">Completed</span>
-                <% } else if (order.status === 'pending') { %>
-                  <span class="badge badge-pending">Pending</span>
-                <% } else if (order.status === 'cancelled') { %>
-                  <span class="badge badge-pending" style="background:#fee2e2;color:#b91c1c;">Cancelled</span>
-                <% } else { %>
-                  <span class="badge badge-processing"><%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %></span>
-                <% } %>
-              </td>
-            </tr>
-          <% }); %>
-        <% } else { %>
+    <div class="admin-stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+      <div>
+        <div class="stat-label">TOTAL ORDERS</div>
+        <div class="stat-value">
+          <%= stats.totalOrders.toLocaleString("id-ID") %>
+        </div>
+      </div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-paintbrush"></i></div>
+      <div>
+        <div class="stat-label">ACTIVE TREATMENTS</div>
+        <div class="stat-value">
+          <%= stats.activeTreatments.toLocaleString("id-ID") %>
+        </div>
+      </div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-user-plus"></i></div>
+      <div>
+        <div class="stat-label">NEW CUSTOMERS (MONTH)</div>
+        <div class="stat-value">
+          <%= stats.newCustomersThisMonth.toLocaleString("id-ID") %>
+        </div>
+      </div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <div class="stat-label">TOTAL CUSTOMERS</div>
+        <div class="stat-value">
+          <%= stats.totalCustomers.toLocaleString("id-ID") %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAR CHART MOCK -->
+  <div class="admin-charts-row">
+    <div class="chart-header">
+      <div class="chart-title">
+        <h3>Analisis Pesanan</h3>
+        <p>VOLUME PESANAN PER BULAN</p>
+      </div>
+      <div class="chart-controls">
+        <div class="badge badge-layanan-gray"><span
+            style="width:8px;height:8px;background:#0D47A1;border-radius:50%;display:inline-block;margin-right:6px;"></span>Tahun
+        </div>
+        <select onchange="window.location.href='?year=' + this.value">
+          <% availableYears.forEach(year=> { %>
+            <option value="<%= year %>" <%=targetYear===year ? 'selected' : '' %>><%= year %>
+            </option>
+            <% }) %>
+        </select>
+      </div>
+    </div>
+
+    <div class="bar-chart-mock">
+      <% const months=['Jan', 'Feb' , 'Mar' , 'Apr' , 'Mei' , 'Jun' , 'Jul' , 'Agu' , 'Sep' , 'Okt' , 'Nov' , 'Des' ];
+        %>
+        <% if (typeof monthlyOrders !=='undefined' ) { %>
+          <% monthlyOrders.forEach((count, index)=> { %>
+            <% const heightPct=maxMonthlyOrder> 0 ? Math.round((count / maxMonthlyOrder) * 100) : 0; %>
+              <% const styleAttr=`style="height: ${heightPct > 0 ? heightPct : 0}%;" `; %>
+                <div class="bar-col <%= (heightPct === 100 && count > 0) ? 'active' : '' %>" <%- styleAttr %>>
+                  <% if (count> 0) { %><span class="bar-tooltip">
+                      <%= count %>
+                    </span>
+                    <% } %>
+                      <span class="bar-label">
+                        <%= months[index] %>
+                      </span>
+                </div>
+                <% }) %>
+                  <% } %>
+    </div>
+  </div>
+
+  <!-- BOTTOM GRID -->
+  <div class="admin-grid-layout">
+    <!-- Transactions -->
+    <div class="admin-panel" style="overflow-x: auto;">
+      <div class="admin-panel-header">
+        <h3 class="admin-panel-title">Transaksi Terakhir</h3>
+        <a href="#" class="admin-link">Lihat Semua</a>
+      </div>
+      <table class="admin-table">
+        <thead>
           <tr>
-            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Belum ada transaksi</td>
+            <th>ORDER ID</th>
+            <th>CUSTOMER</th>
+            <th>SERVICE</th>
+            <th>STATUS</th>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          <% if (recentOrders && recentOrders.length> 0) { %>
+            <% recentOrders.forEach(order=> { %>
+              <tr>
+                <td style="color: var(--text-secondary); font-weight: 600;">
+                  <%= order.orderId %>
+                </td>
+                <td>
+                  <span class="table-client-name">
+                    <%= order.user ? order.user.name : "Unknown Customer" %>
+                  </span>
+                  <% if (order.items && order.items.length> 0) { %>
+                    <span class="table-client-sub">
+                      <%= order.items[0].shoeName %>
+                        <%= order.items.length> 1 ? `(+${order.items.length - 1} lainnya)` : '' %>
+                    </span>
+                    <% } else { %>
+                      <span class="table-client-sub">-</span>
+                      <% } %>
+                </td>
+                <td><span class="badge badge-layanan-blue">
+                    <%= order.items && order.items.length> 0 ? order.items[0].serviceType : "-" %>
+                  </span></td>
+                <td>
+                  <% if (order.status==='completed' ) { %>
+                    <span class="badge badge-completed">Completed</span>
+                    <% } else if (order.status==='pending' ) { %>
+                      <span class="badge badge-pending">Pending</span>
+                      <% } else if (order.status==='cancelled' ) { %>
+                        <span class="badge badge-pending" style="background:#fee2e2;color:#b91c1c;">Cancelled</span>
+                        <% } else { %>
+                          <span class="badge badge-processing">
+                            <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                          </span>
+                          <% } %>
+                </td>
+              </tr>
+              <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Belum ada
+                      transaksi</td>
+                  </tr>
+                  <% } %>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Right Column -->
-  <div>
-    <!-- Popular Services Donut -->
-    <div class="admin-panel" style="margin-bottom: 24px;">
-      <h3 class="admin-panel-title">Analisis Layanan Terpopuler</h3>
-      <div class="donut-mock-container">
-        <div class="donut-circle">
-          <div class="donut-inner">
-            <span class="total">TOTAL</span>
-            <span class="val"><%= typeof totalServices !== 'undefined' ? totalServices : 0 %></span>
+    <!-- Right Column -->
+    <div>
+      <!-- Popular Services Donut -->
+      <div class="admin-panel" style="margin-bottom: 24px;">
+        <h3 class="admin-panel-title">Analisis Layanan Terpopuler</h3>
+        <div class="donut-mock-container">
+          <div class="donut-circle">
+            <div class="donut-inner">
+              <span class="total">TOTAL</span>
+              <span class="val">
+                <%= typeof totalServices !=='undefined' ? totalServices : 0 %>
+              </span>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <% if (typeof serviceStats !=='undefined' && serviceStats.length> 0) { %>
+              <% const colors=['#0D47A1', '#94a3b8' , '#475569' , '#cbd5e1' ]; %>
+                <% serviceStats.slice(0, 4).forEach((stat, index)=> { %>
+                  <% const bgStyle=`style="background:${colors[index % colors.length]};" `; %>
+                    <div class="legend-item">
+                      <span class="lbl"><i class="legend-dot" <%- bgStyle %>></i>
+                        <%= stat._id %>
+                      </span>
+                      <span class="pct">
+                        <%= totalServices ? Math.round((stat.count / totalServices) * 100) : 0 %>%
+                      </span>
+                    </div>
+                    <% }); %>
+                      <% } else { %>
+                        <div class="legend-item"><span class="lbl">Belum ada data</span> <span class="pct">0%</span>
+                        </div>
+                        <% } %>
           </div>
         </div>
-        <div class="donut-legend">
-          <% if (typeof serviceStats !== 'undefined' && serviceStats.length > 0) { %>
-            <% const colors = ['#0D47A1', '#94a3b8', '#475569', '#cbd5e1']; %>
-            <% serviceStats.slice(0, 4).forEach((stat, index) => { %>
-              <% const bgStyle = `style="background:${colors[index % colors.length]};"`; %>
-              <div class="legend-item">
-                <span class="lbl"><i class="legend-dot" <%- bgStyle %>></i><%= stat._id %></span> 
-                <span class="pct"><%= totalServices ? Math.round((stat.count / totalServices) * 100) : 0 %>%</span>
+      </div>
+
+      <!-- Staff Activity -->
+      <div class="admin-panel">
+        <h3 class="admin-panel-title">Aktivitas Staff</h3>
+        <div class="activity-list">
+          <% if (typeof staffActivities !=='undefined' && staffActivities.length> 0) { %>
+            <% staffActivities.forEach(activity=> { %>
+              <div class="activity-item">
+                <div class="activity-user">
+                  <img
+                    src="https://ui-avatars.com/api/?name=<%= encodeURIComponent(activity.staffName) %>&background=random"
+                    alt="<%= activity.staffName %>">
+                  <div class="activity-details">
+                    <span class="name">
+                      <%= activity.staffName %>
+                    </span>
+                    <span
+                      class="action <%= activity.action === 'COMPLETED' ? '' : (activity.action === 'IN-PROGRESS' ? 'blue' : 'orange') %>">
+                      <%= activity.action %>: <%= activity.shoeName %>
+                    </span>
+                  </div>
+                </div>
+                <span class="activity-time">
+                  <% const diff=Math.floor((new Date() - new Date(activity.timeAgo)) / 60000); if (diff < 1) { %> Just
+                    now <% } else if (diff < 60) { %>
+                      <%= diff %>m ago <% } else if (diff < 1440) { %>
+                          <%= Math.floor(diff/60) %>h ago <% } else { %>
+                              <%= Math.floor(diff/1440) %>d ago <% } %>
+                </span>
               </div>
-            <% }); %>
-          <% } else { %>
-            <div class="legend-item"><span class="lbl">Belum ada data</span> <span class="pct">0%</span></div>
-          <% } %>
+              <% }); %>
+                <% } else { %>
+                  <div style="text-align: center; padding: 20px; color: var(--text-secondary); font-size: 12px;">
+                    Belum ada aktivitas staff tercatat.
+                  </div>
+                  <% } %>
         </div>
+        <button class="btn-manage-staff" onclick="window.location.href='/admin/karyawan'">Manage All Staff</button>
       </div>
+
     </div>
-
-    <!-- Staff Activity -->
-    <div class="admin-panel">
-      <h3 class="admin-panel-title">Aktivitas Staff</h3>
-      <div class="activity-list">
-        <div class="activity-item">
-          <div class="activity-user">
-            <img src="https://ui-avatars.com/api/?name=Dimas&background=random" alt="Dimas">
-            <div class="activity-details">
-              <span class="name">Dimas Saputra</span>
-              <span class="action">SELESAI: REPAINT AF1</span>
-            </div>
-          </div>
-          <span class="activity-time">12m ago</span>
-        </div>
-        
-        <div class="activity-item">
-          <div class="activity-user">
-            <img src="https://ui-avatars.com/api/?name=Citra&background=random" alt="Citra">
-            <div class="activity-details">
-              <span class="name">Citra Kirana</span>
-              <span class="action blue">MULAI: DEEP CLEAN AJ1</span>
-            </div>
-          </div>
-          <span class="activity-time">24m ago</span>
-        </div>
-
-        <div class="activity-item">
-          <div class="activity-user">
-            <img src="https://ui-avatars.com/api/?name=Rendi&background=random" alt="Rendi">
-            <div class="activity-details">
-              <span class="name">Rendi Wijaya</span>
-              <span class="action orange">ISTIRAHAT MAKAN</span>
-            </div>
-          </div>
-          <span class="activity-time">1h ago</span>
-        </div>
-      </div>
-      <button class="btn-manage-staff">Manage All Staff</button>
-    </div>
-
   </div>
-</div>
 
-<%- include('../partials/dashboard-foot') %>
+  <%- include('../partials/dashboard-foot') %>

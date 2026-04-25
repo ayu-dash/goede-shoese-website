@@ -108,3 +108,39 @@ exports.getMyOrders = async (req, res) => {
         });
     }
 };
+
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const { status, note } = req.body;
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Order not found",
+            });
+        }
+
+        order.status = status;
+        order.statusHistory.push({
+            status,
+            updatedBy: req.user.id,
+            updatedAt: Date.now(),
+            note,
+        });
+
+        await order.save();
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                order,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "fail",
+            message: err.message,
+        });
+    }
+};
