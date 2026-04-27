@@ -1096,6 +1096,7 @@
 /* Active Order Card */
 .active-order-card {
   display: flex;
+  margin-bottom: 16px;
   background: var(--white);
   border: 1px solid var(--gray-light);
   border-radius: var(--radius-md);

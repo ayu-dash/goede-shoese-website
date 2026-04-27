@@ -1,136 +1,157 @@
 <%- include('../partials/dashboard-head') %>
 
-<!-- DASHBOARD HERO BANNER -->
-<div class="dash-banner">
-  <img src="/images/dashboard-banner.png" alt="" class="dash-banner-bg" />
-  <div class="dash-banner-overlay"></div>
-  <div class="dash-banner-content">
-    <h2 class="dash-banner-title">Berikan Kilau Baru<br />Pada Sepatu Anda.</h2>
-    <a href="/customer/create-order" class="btn btn-white dash-banner-btn">
-      <i class="fa-solid fa-circle-plus"></i> Pesan Perawatan
-    </a>
-  </div>
-</div>
-
-<!-- DASHBOARD BODY GRID -->
-<div class="dash-body">
-  <!-- LEFT COLUMN -->
-  <div class="dash-left">
-    <!-- AKTIVITAS SAYA -->
-    <h3 class="dash-section-title">Aktivitas Saya</h3>
-    <div class="dash-stats">
-      <div class="dash-stat-card">
-        <span class="dash-stat-label">TOTAL PESANAN</span>
-        <div class="dash-stat-row">
-          <span class="dash-stat-num"><%= String(userStats.totalOrders).padStart(2, '0') %></span>
-          <span class="dash-stat-badge dash-stat-badge--up"
-            ><i class="fa-solid fa-arrow-trend-up"></i> +0%</span
-          >
-        </div>
-      </div>
-      <div class="dash-stat-card">
-        <span class="dash-stat-label">STATUS AKTIF</span>
-        <div class="dash-stat-row">
-          <span class="dash-stat-num"><%= String(userStats.activeOrders).padStart(2, '0') %></span>
-          <span class="dash-stat-sub"
-            >SEPATU SEDANG<br />
-            DIPROSES</span
-          >
-        </div>
-      </div>
-    </div>
-
-    <!-- AKTIVITAS TERAKHIR -->
-    <div class="dash-activity-header">
-      <h4 class="dash-subtitle">Aktivitas Terakhir</h4>
-      <a href="/customer/my-orders" class="dash-link"
-        >Lihat Semua <i class="fa-solid fa-arrow-right"></i
-      ></a>
-    </div>
-
-    <div class="dash-activity-list">
-      <% if (recentOrders && recentOrders.length > 0) { %>
-        <% recentOrders.forEach(order => { %>
-          <a href="/customer/order-detail?id=<%= order._id %>" class="dash-activity-item">
-            <img
-              src="/images/hero-shoe.png"
-              alt="Sepatu"
-              class="dash-activity-img"
-            />
-            <div class="dash-activity-info">
-              <span class="dash-activity-name"><%= order.items[0].shoeName %></span>
-              <span class="dash-activity-service">
-                <%= order.items[0].serviceType %> 
-                <%= order.items[0].addons.length > 0 ? '+ ' + order.items[0].addons.join(', ') : '' %>
-              </span>
-            </div>
-            <div class="dash-activity-meta">
-              <span class="dash-activity-meta-label">TANGGAL PESAN</span>
-              <span class="dash-activity-meta-value"><%= new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) %></span>
-            </div>
-            <div class="dash-activity-status dash-activity-status--<%= order.status === 'completed' ? 'done' : 'process' %>">
-              <i class="fa-solid <%= order.status === 'completed' ? 'fa-circle-check' : 'fa-circle' %>"></i> 
-              <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
-            </div>
-          </a>
-        <% }) %>
-      <% } else { %>
-        <p class="text-muted">Belum ada aktivitas terbaru.</p>
-      <% } %>
+  <!-- DASHBOARD HERO BANNER -->
+  <div class="dash-banner">
+    <img src="/images/dashboard-banner.png" alt="" class="dash-banner-bg" />
+    <div class="dash-banner-overlay"></div>
+    <div class="dash-banner-content">
+      <h2 class="dash-banner-title">Berikan Kilau Baru<br />Pada Sepatu Anda.</h2>
+      <a href="/customer/create-order" class="btn btn-white dash-banner-btn">
+        <i class="fa-solid fa-circle-plus"></i> Pesan Perawatan
+      </a>
     </div>
   </div>
 
-  <!-- RIGHT COLUMN -->
-  <div class="dash-right">
-    <!-- TIPS PERAWATAN -->
-    <div class="dash-tips-card">
-      <h4 class="dash-tips-title">Tips Perawatan</h4>
-      <div class="dash-tip-item">
-        <div class="dash-tip-icon"><i class="fa-solid fa-sun"></i></div>
-        <div>
-          <span class="dash-tip-name">Hindari Sinar Matahari</span>
-          <span class="dash-tip-desc"
-            >Jangan menjemur sepatu langsung di bawah terik matahari agar warna
-            tidak pudar.</span
-          >
+  <!-- DASHBOARD BODY GRID -->
+  <div class="dash-body">
+    <!-- LEFT COLUMN -->
+    <div class="dash-left">
+      <!-- AKTIVITAS SAYA -->
+      <h3 class="dash-section-title">Aktivitas Saya</h3>
+      <div class="dash-stats">
+        <div class="dash-stat-card">
+          <span class="dash-stat-label">TOTAL PESANAN</span>
+          <div class="dash-stat-row">
+            <span class="dash-stat-num">
+              <%= String(userStats.totalOrders).padStart(2, '0' ) %>
+            </span>
+            <span class="dash-stat-badge dash-stat-badge--up"><i class="fa-solid fa-arrow-trend-up"></i> +0%</span>
+          </div>
+        </div>
+        <div class="dash-stat-card">
+          <span class="dash-stat-label">STATUS AKTIF</span>
+          <div class="dash-stat-row">
+            <span class="dash-stat-num">
+              <%= String(userStats.activeOrders).padStart(2, '0' ) %>
+            </span>
+            <span class="dash-stat-sub">SEPATU SEDANG<br />
+              DIPROSES</span>
+          </div>
         </div>
       </div>
-      <div class="dash-tip-item">
-        <div class="dash-tip-icon"><i class="fa-solid fa-broom"></i></div>
-        <div>
-          <span class="dash-tip-name">Sikat Satu Arah</span>
-          <span class="dash-tip-desc"
-            >Sikat sepatu dengan arah satu sisi untuk menjaga kerapatan material
-            suede.</span
-          >
-        </div>
+
+      <!-- AKTIVITAS TERAKHIR -->
+      <div class="dash-activity-header">
+        <h4 class="dash-subtitle">Aktivitas Terakhir</h4>
+        <a href="/customer/my-orders" class="dash-link">Lihat Semua <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-      <div class="dash-tip-item">
-        <div class="dash-tip-icon">
-          <i class="fa-solid fa-boxes-stacked"></i>
-        </div>
-        <div>
-          <span class="dash-tip-name">Gunakan Silica Gel</span>
-          <span class="dash-tip-desc"
-            >Simpan sepatu bersama silica gel untuk menyerap kelembapan dan
-            mencegah jamur di area tertutup.</span
-          >
-        </div>
+
+      <div class="dash-activity-list">
+        <% if (recentOrders && recentOrders.length> 0) { %>
+          <% recentOrders.forEach(order=> { %>
+            <a href="/customer/order-detail?id=<%= order._id %>" class="dash-activity-item">
+              <img src="/images/hero-shoe.png" alt="Sepatu" class="dash-activity-img" />
+              <div class="dash-activity-info">
+                <span class="dash-activity-name">
+                  <%= order.items[0].shoeName %>
+                </span>
+                <span class="dash-activity-service">
+                  <%= order.items[0].serviceType %>
+                    <%= order.items[0].addons.length> 0 ? '+ ' + order.items[0].addons.join(', ') : '' %>
+                </span>
+              </div>
+              <div class="dash-activity-meta">
+                <span class="dash-activity-meta-label">TANGGAL PESAN</span>
+                <span class="dash-activity-meta-value">
+                  <%= new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric' , month: 'short' }) %>
+                </span>
+              </div>
+              <div
+                class="dash-activity-status dash-activity-status--<%= order.status === 'completed' ? 'done' : 'process' %>">
+                <i class="fa-solid <%= order.status === 'completed' ? 'fa-circle-check' : 'fa-circle' %>"></i>
+                <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+              </div>
+            </a>
+            <% }) %>
+              <% } else { %>
+                <p class="text-muted">Belum ada aktivitas terbaru.</p>
+                <% } %>
       </div>
-      <a href="#" class="dash-tips-link">Baca Panduan Lengkap</a>
     </div>
 
-    <!-- OUTLET TERDEKAT -->
-    <div class="dash-outlet-card">
-      <span class="dash-outlet-label">OUTLET TERDEKAT</span>
-      <div class="dash-outlet-row">
-        <span class="dash-outlet-name">Goede Shoes SCBD, Jakarta</span>
-        <a href="#" class="dash-outlet-map" aria-label="Lihat Peta">
-          <i class="fa-solid fa-location-dot"></i>
-        </a>
+    <!-- RIGHT COLUMN -->
+    <div class="dash-right">
+      <!-- TIPS PERAWATAN -->
+      <div class="dash-tips-card">
+        <h4 class="dash-tips-title">Tips Perawatan</h4>
+        <div class="dash-tip-item">
+          <div class="dash-tip-icon"><i class="fa-solid fa-sun"></i></div>
+          <div>
+            <span class="dash-tip-name">Hindari Sinar Matahari</span>
+            <span class="dash-tip-desc">Jangan menjemur sepatu langsung di bawah terik matahari agar warna
+              tidak pudar.</span>
+          </div>
+        </div>
+        <div class="dash-tip-item">
+          <div class="dash-tip-icon"><i class="fa-solid fa-broom"></i></div>
+          <div>
+            <span class="dash-tip-name">Sikat Satu Arah</span>
+            <span class="dash-tip-desc">Sikat sepatu dengan arah satu sisi untuk menjaga kerapatan material
+              suede.</span>
+          </div>
+        </div>
+        <div class="dash-tip-item">
+          <div class="dash-tip-icon">
+            <i class="fa-solid fa-boxes-stacked"></i>
+          </div>
+          <div>
+            <span class="dash-tip-name">Gunakan Silica Gel</span>
+            <span class="dash-tip-desc">Simpan sepatu bersama silica gel untuk menyerap kelembapan dan
+              mencegah jamur di area tertutup.</span>
+          </div>
+        </div>
+        <a href="#" class="dash-tips-link">Baca Panduan Lengkap</a>
       </div>
+
+      <!-- OUTLET TERDEKAT -->
+      <div class="dash-outlet-card">
+        <span class="dash-outlet-label">OUTLET TERDEKAT</span>
+        <div class="dash-outlet-row" style="margin-bottom: 12px;">
+          <span class="dash-outlet-name">
+            <%= settings.storeInfo.name %>, <%= settings.storeInfo.address %>
+          </span>
+        </div>
+        <div id="outlet-map"
+          style="height: 180px; width: 100%; border-radius: 12px; border: 1px solid var(--gray-light); z-index: 1;">
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var lat = <%= (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lat) ? settings.storeInfo.coordinates.lat : -6.200000 %>;
+          var lng = <%= (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lng) ? settings.storeInfo.coordinates.lng : 106.816666 %>;
+          var storeName = "<%= settings.storeInfo.name %>";
+
+          var map = L.map('outlet-map', {
+            zoomControl: false,
+            attributionControl: false
+          }).setView([lat, lng], 15);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+          var customIcon = L.divIcon({
+            html: '<i class="fa-solid fa-location-dot" style="color: var(--blue-accent); font-size: 24px;"></i>',
+            className: 'custom-div-icon',
+            iconSize: [24, 24],
+            iconAnchor: [12, 24]
+          });
+
+          L.marker([lat, lng], { icon: customIcon }).addTo(map)
+            .bindPopup('<b>' + storeName + '</b>')
+            .openPopup();
+        });
+      </script>
     </div>
   </div>
-</div>
 
-<%- include('../partials/dashboard-foot') %>
+  <%- include('../partials/dashboard-foot') %>

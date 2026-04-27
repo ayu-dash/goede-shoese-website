@@ -136,14 +136,31 @@
           </div>
         </div>
 
+        <div class="ops-form-row">
+          <div class="ops-form-group">
+            <label class="ops-field-label">LATITUDE</label>
+            <div class="ops-field-value-box"><%= settings.storeInfo.coordinates ? settings.storeInfo.coordinates.lat : '-' %></div>
+          </div>
+          <div class="ops-form-group">
+            <label class="ops-field-label">LONGITUDE</label>
+            <div class="ops-field-value-box"><%= settings.storeInfo.coordinates ? settings.storeInfo.coordinates.lng : '-' %></div>
+          </div>
+        </div>
+
         <!-- Map -->
         <div class="ops-map-container" style="height: 300px; border-radius: 12px; overflow: hidden; margin-top: 20px; margin-bottom: 20px;">
+          <% 
+            var mapUrl = "https://maps.google.com/maps?q=" + encodeURIComponent(settings.storeInfo.address) + "&t=&z=15&ie=UTF8&iwloc=&output=embed";
+            if (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lat && settings.storeInfo.coordinates.lng) {
+              mapUrl = "https://maps.google.com/maps?q=" + settings.storeInfo.coordinates.lat + "," + settings.storeInfo.coordinates.lng + "&t=&z=15&ie=UTF8&iwloc=&output=embed";
+            }
+          %>
           <iframe 
             width="100%" 
             height="100%" 
             frameborder="0" 
             style="border:0" 
-            src="https://maps.google.com/maps?q=<%= encodeURIComponent(settings.storeInfo.address) %>&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+            src="<%= mapUrl %>" 
             allowfullscreen>
           </iframe>
         </div>
@@ -236,6 +253,29 @@
                 />
                 <i class="fa-regular fa-envelope"></i>
               </div>
+            </div>
+          </div>
+
+          <div class="ops-form-row" style="margin-top: 16px;">
+            <div class="ops-form-group">
+              <label class="ops-field-label">LATITUDE</label>
+              <input
+                type="text"
+                name="lat"
+                class="ops-field-input"
+                value="<%= settings.storeInfo.coordinates ? settings.storeInfo.coordinates.lat : '' %>"
+                placeholder="-6.200000"
+              />
+            </div>
+            <div class="ops-form-group">
+              <label class="ops-field-label">LONGITUDE</label>
+              <input
+                type="text"
+                name="lng"
+                class="ops-field-input"
+                value="<%= settings.storeInfo.coordinates ? settings.storeInfo.coordinates.lng : '' %>"
+                placeholder="106.816666"
+              />
             </div>
           </div>
 
@@ -428,7 +468,11 @@
         openTime: formData.get('openTime'),
         closeTime: formData.get('closeTime'),
         phone: formData.get('phone'),
-        email: formData.get('email')
+        email: formData.get('email'),
+        coordinates: {
+          lat: parseFloat(formData.get('lat')),
+          lng: parseFloat(formData.get('lng'))
+        }
       }
     };
 
