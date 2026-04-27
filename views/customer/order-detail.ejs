@@ -33,165 +33,153 @@
                   <%= item.addons.length> 0 ? '+ ' + item.addons.join(', ') : '' %>
               </span>
             </div>
-            <% 
-              const steps = [];
-              steps.push({ key: 'pending', label: 'Submit', icon: 'fa-file-invoice' });
-              
-              if (order.payment.method !== 'cod') {
-                steps.push({ key: 'payment', label: 'Pembayaran', icon: 'fa-credit-card' });
-              }
-              
-              // If pickup method is self, change pending label if status is pending
-              if (order.logistics.pickupMethod === 'self' && order.status === 'pending') {
-                steps[0].label = 'Menunggu Antaran';
-              }
-
-              if (order.logistics.pickupMethod === 'pickup') {
-                steps.push({ key: 'pickup', label: 'Dijemput', icon: 'fa-truck-pickup' });
-              }
-              
-              // Core Steps
-              steps.push({ key: 'received', label: 'Diterima', icon: 'fa-box-open' });
-              steps.push({ key: 'validating-in', label: 'Cek Kondisi', icon: 'fa-clipboard-check' });
-              steps.push({ key: 'in-progress', label: 'Cuci', icon: 'fa-soap' });
-              steps.push({ key: 'quality-check', label: 'Cek Hasil', icon: 'fa-magnifying-glass' });
-              
-              // Step: Ready for Pickup (Only if delivery method is 'self')
-              if (order.logistics.deliveryMethod === 'self') {
-                steps.push({ key: 'ready-to-pickup', label: 'Menunggu Diambil', icon: 'fa-box-archive' });
-              }
-              
-              if (order.logistics.deliveryMethod === 'delivery') {
-                steps.push({ key: 'delivery', label: 'Diantar', icon: 'fa-truck-fast' });
-              }
-              
-              // Step: Final Payment Validation (Only for COD)
-              if (order.payment.method === 'cod') {
-                steps.push({ key: 'payment-cod', label: 'Validasi Bayar', icon: 'fa-hand-holding-dollar' });
-              }
-              
-              steps.push({ key: 'completed', label: 'Selesai', icon: 'fa-check-double' });
-              
-              let effectiveStatus = order.status;
-              // If delivery is self and status is quality-check, it means it's ready for pickup
-              if (order.logistics.deliveryMethod === 'self' && effectiveStatus === 'quality-check') {
-                effectiveStatus = 'ready-to-pickup';
-              }
-
-              // If COD and order is at the final logistics stage (delivery or ready-to-pickup),
-              // we move the effective status to 'payment-cod' so the user sees it's time to pay.
-              if (order.payment.method === 'cod' && (effectiveStatus === 'delivery' || effectiveStatus === 'ready-to-pickup')) {
-                effectiveStatus = 'payment-cod';
-              }
-
-              const currentIdx = steps.findIndex(s => s.key === effectiveStatus);
+            <% const steps=[]; steps.push({ key: 'pending' , label: 'Submit' , icon: 'fa-file-invoice' }); if
+              (order.payment.method !=='cod' ) { steps.push({ key: 'payment' , label: 'Pembayaran' ,
+              icon: 'fa-credit-card' }); } // If pickup method is self, change pending label if status is pending if
+              (order.logistics.pickupMethod==='self' && order.status==='pending' ) { steps[0].label='Menunggu Antaran' ;
+              } if (order.logistics.pickupMethod==='pickup' ) { steps.push({ key: 'pickup' , label: 'Dijemput' ,
+              icon: 'fa-truck-pickup' }); } // Core Steps steps.push({ key: 'received' , label: 'Diterima' ,
+              icon: 'fa-box-open' }); steps.push({ key: 'validating-in' , label: 'Cek Kondisi' ,
+              icon: 'fa-clipboard-check' }); steps.push({ key: 'in-progress' , label: 'Cuci' , icon: 'fa-soap' });
+              steps.push({ key: 'quality-check' , label: 'Cek Hasil' , icon: 'fa-magnifying-glass' }); // Step: Ready
+              for Pickup (Only if delivery method is 'self' ) if (order.logistics.deliveryMethod==='self' ) {
+              steps.push({ key: 'ready-to-pickup' , label: 'Menunggu Diambil' , icon: 'fa-box-archive' }); } if
+              (order.logistics.deliveryMethod==='delivery' ) { steps.push({ key: 'delivery' , label: 'Diantar' ,
+              icon: 'fa-truck-fast' }); } // Step: Final Payment Validation (Only for COD) if
+              (order.payment.method==='cod' ) { steps.push({ key: 'payment-cod' , label: 'Validasi Bayar' ,
+              icon: 'fa-hand-holding-dollar' }); } steps.push({ key: 'completed' , label: 'Selesai' ,
+              icon: 'fa-check-double' }); let effectiveStatus=order.status; // If delivery is self and status is
+              quality-check, it means it's ready for pickup if (order.logistics.deliveryMethod==='self' &&
+              effectiveStatus==='quality-check' ) { effectiveStatus='ready-to-pickup' ; } // If COD and order is at the
+              final logistics stage (delivery or ready-to-pickup), // we move the effective status to 'payment-cod' so
+              the user sees it's time to pay. if (order.payment.method==='cod' && (effectiveStatus==='delivery' ||
+              effectiveStatus==='ready-to-pickup' )) { effectiveStatus='payment-cod' ; } const
+              currentIdx=steps.findIndex(s=> s.key === effectiveStatus);
               const pct = currentIdx >= 0 ? Math.round((currentIdx / (steps.length - 1)) * 100) : 0;
-            %>
-            <div class="detail-item-pct">
-              <span class="detail-pct-num">
-                <%= pct %>%
-              </span>
-              <span class="detail-pct-label">COMPLETED</span>
-            </div>
+              %>
+              <div class="detail-item-pct">
+                <span class="detail-pct-num">
+                  <%= pct %>%
+                </span>
+                <span class="detail-pct-label">COMPLETED</span>
+              </div>
           </div>
 
           <!-- Progress Timeline (Detailed) -->
           <div class="timeline" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--gray-light);">
-            <% steps.forEach((step, index) => { %>
-              <% 
-                let stepStatusClass = "";
-                if (order.status === 'cancelled') {
-                  stepStatusClass = "cancelled";
-                } else if (index < currentIdx || order.status === 'completed') {
-                  stepStatusClass = "completed";
-                } else if (index === currentIdx) {
-                  stepStatusClass = "active";
-                }
-              %>
-              <div class="timeline-step <%= stepStatusClass %>" style="min-width: 60px;">
-                <div class="timeline-dot"><i class="fa-solid <%= step.icon %>"></i></div>
-                <span class="timeline-label" style="font-size: 8.5px;"><%= step.label %></span>
-              </div>
-              
-              <% if (index < steps.length - 1) { %>
-                <% 
-                  let lineStatusClass = "";
-                  if (order.status !== 'cancelled' && (index < currentIdx || order.status === 'completed')) {
-                    lineStatusClass = "completed";
-                  }
-                %>
-                <div class="timeline-line <%= lineStatusClass %>"></div>
-              <% } %>
-            <% }) %>
+            <% steps.forEach((step, index)=> { %>
+              <% let stepStatusClass="" ; if (order.status==='cancelled' ) { stepStatusClass="cancelled" ; } else if
+                (index < currentIdx || order.status==='completed' ) { stepStatusClass="completed" ; } else if
+                (index===currentIdx) { stepStatusClass="active" ; } %>
+                <div class="timeline-step <%= stepStatusClass %>" style="min-width: 60px;">
+                  <div class="timeline-dot"><i class="fa-solid <%= step.icon %>"></i></div>
+                  <span class="timeline-label" style="font-size: 8.5px;">
+                    <%= step.label %>
+                  </span>
+                </div>
+
+                <% if (index < steps.length - 1) { %>
+                  <% let lineStatusClass="" ; if (order.status !=='cancelled' && (index < currentIdx ||
+                    order.status==='completed' )) { lineStatusClass="completed" ; } %>
+                    <div class="timeline-line <%= lineStatusClass %>"></div>
+                    <% } %>
+                      <% }) %>
           </div>
         </div>
         <% }) %>
 
-      <!-- Dokumentasi Hasil & Kondisi -->
-      <% 
-        const validatingInEntry = order.statusHistory.find(h => h.status === 'validating-in');
-        const qualityCheckEntry = order.statusHistory.find(h => h.status === 'quality-check');
-      %>
+          <!-- Dokumentasi Hasil & Kondisi -->
+          <% const validatingInEntry=order.statusHistory.find(h=> h.status === 'validating-in');
+            const qualityCheckEntry = order.statusHistory.find(h => h.status === 'quality-check');
+            %>
 
-      <% if (validatingInEntry || qualityCheckEntry) { %>
-        <div class="detail-item-card" style="margin-top: 20px;">
-          <h5 style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-camera-retro" style="color: var(--navy); font-size: 18px;"></i> DOKUMENTASI & CATATAN PETUGAS
-          </h5>
-          
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
-            <!-- Kondisi Awal -->
-            <% if (validatingInEntry) { %>
-              <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <span style="font-size: 11px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;">Kondisi Awal (Diterima)</span>
-                  <span style="font-size: 10px; color: var(--text-secondary); font-weight: 600;"><%= new Date(validatingInEntry.updatedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
-                </div>
-                <% if (validatingInEntry.note) { %>
-                  <div style="font-size: 13px; color: var(--text-primary); line-height: 1.6; margin-bottom: 16px; padding: 12px; background: #fff; border-radius: 8px; border-left: 4px solid var(--navy); box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                    <strong>Catatan:</strong><br/>
-                    <%= validatingInEntry.note %>
-                  </div>
-                <% } %>
-                <% if (validatingInEntry.photos && validatingInEntry.photos.length > 0) { %>
-                  <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
-                    <% validatingInEntry.photos.forEach(photo => { %>
-                      <div style="flex-shrink: 0; position: relative;">
-                        <img src="<%= photo %>" alt="Kondisi Awal" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s;" onclick="window.open('<%= photo %>', '_blank')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
-                      </div>
-                    <% }) %>
-                  </div>
-                <% } %>
-              </div>
-            <% } %>
+            <% if (validatingInEntry || qualityCheckEntry) { %>
+              <div class="detail-item-card" style="margin-top: 20px;">
+                <h5
+                  style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                  <i class="fa-solid fa-camera-retro" style="color: var(--navy); font-size: 18px;"></i> DOKUMENTASI &
+                  CATATAN PETUGAS
+                </h5>
 
-            <!-- Hasil Akhir -->
-            <% if (qualityCheckEntry) { %>
-              <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 1px solid #dcfce7; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <span style="font-size: 11px; font-weight: 800; color: #166534; text-transform: uppercase; letter-spacing: 0.8px;">Hasil Cuci (QC Lulus)</span>
-                  <span style="font-size: 10px; color: #166534; font-weight: 600;"><%= new Date(qualityCheckEntry.updatedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
-                </div>
-                <% if (qualityCheckEntry.note) { %>
-                  <div style="font-size: 13px; color: #166534; line-height: 1.6; margin-bottom: 16px; padding: 12px; background: #fff; border-radius: 8px; border-left: 4px solid #22c55e; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                    <strong>Catatan Petugas:</strong><br/>
-                    <%= qualityCheckEntry.note %>
-                  </div>
-                <% } %>
-                <% if (qualityCheckEntry.photos && qualityCheckEntry.photos.length > 0) { %>
-                  <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
-                    <% qualityCheckEntry.photos.forEach(photo => { %>
-                      <div style="flex-shrink: 0; position: relative;">
-                        <img src="<%= photo %>" alt="Hasil Cuci" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s;" onclick="window.open('<%= photo %>', '_blank')" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                  <!-- Kondisi Awal -->
+                  <% if (validatingInEntry) { %>
+                    <div
+                      style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column;">
+                      <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span
+                          style="font-size: 11px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;">Kondisi
+                          Awal</span>
+                        <span style="font-size: 10px; color: var(--text-secondary); font-weight: 600;">
+                          <%= new Date(validatingInEntry.updatedAt).toLocaleDateString('id-ID', { day: 'numeric' ,
+                            month: 'short' , year: 'numeric' }) %>
+                        </span>
                       </div>
-                    <% }) %>
-                  </div>
-                <% } %>
+                      <% if (validatingInEntry.note) { %>
+                        <div
+                          style="font-size: 13px; color: var(--text-primary); line-height: 1.6; margin-bottom: 16px; padding: 12px; background: #fff; border-radius: 8px; border-left: 4px solid var(--navy); box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                          <strong>Catatan:</strong><br />
+                          <%= validatingInEntry.note %>
+                        </div>
+                        <% } %>
+                          <% if (validatingInEntry.photos && validatingInEntry.photos.length> 0) { %>
+                            <div
+                              style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
+                              <% validatingInEntry.photos.forEach(photo=> { %>
+                                <div style="flex-shrink: 0; position: relative;">
+                                  <img src="<%= photo %>" alt="Kondisi Awal"
+                                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s;"
+                                    onclick="window.open('<%= photo %>', '_blank')"
+                                    onmouseover="this.style.transform='scale(1.05)'"
+                                    onmouseout="this.style.transform='scale(1)'" />
+                                </div>
+                                <% }) %>
+                            </div>
+                            <% } %>
+                    </div>
+                    <% } %>
+
+                      <!-- Hasil Akhir -->
+                      <% if (qualityCheckEntry) { %>
+                        <div
+                          style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 1px solid #dcfce7; display: flex; flex-direction: column;">
+                          <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span
+                              style="font-size: 11px; font-weight: 800; color: #166534; text-transform: uppercase; letter-spacing: 0.8px;">Hasil
+                              Cuci</span>
+                            <span style="font-size: 10px; color: #166534; font-weight: 600;">
+                              <%= new Date(qualityCheckEntry.updatedAt).toLocaleDateString('id-ID', { day: 'numeric' ,
+                                month: 'short' , year: 'numeric' }) %>
+                            </span>
+                          </div>
+                          <% if (qualityCheckEntry.note) { %>
+                            <div
+                              style="font-size: 13px; color: #166534; line-height: 1.6; margin-bottom: 16px; padding: 12px; background: #fff; border-radius: 8px; border-left: 4px solid #22c55e; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                              <strong>Catatan Petugas:</strong><br />
+                              <%= qualityCheckEntry.note %>
+                            </div>
+                            <% } %>
+                              <% if (qualityCheckEntry.photos && qualityCheckEntry.photos.length> 0) { %>
+                                <div
+                                  style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
+                                  <% qualityCheckEntry.photos.forEach(photo=> { %>
+                                    <div style="flex-shrink: 0; position: relative;">
+                                      <img src="<%= photo %>" alt="Hasil Cuci"
+                                        style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s;"
+                                        onclick="window.open('<%= photo %>', '_blank')"
+                                        onmouseover="this.style.transform='scale(1.05)'"
+                                        onmouseout="this.style.transform='scale(1)'" />
+                                    </div>
+                                    <% }) %>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% } %>
+                </div>
               </div>
-            <% } %>
-          </div>
-        </div>
-      <% } %>
+              <% } %>
     </div>
 
     <!-- RIGHT: LOGISTICS & SUMMARY -->
@@ -205,26 +193,26 @@
           <span class="logistics-info-label">PICKUP METHOD: <%= order.logistics.pickupMethod.toUpperCase() %></span>
           <span class="logistics-info-value">
             <% if(order.logistics.pickupMethod==='pickup' ) { %>
-              <% 
-                const fallbackPickup = (order.user && order.user.addresses && order.user.addresses.length > 0) ? order.user.addresses[0].fullAddress : 'Belum ditentukan';
-              %>
-              <%= order.logistics.pickupAddress || fallbackPickup %>
-                <% } else { %>
-                  <%= settings.storeInfo.address %> (Drop-off ke Gerai)
-                  <% } %>
+              <% const fallbackPickup=(order.user && order.user.addresses && order.user.addresses.length> 0) ?
+                order.user.addresses[0].fullAddress : 'Belum ditentukan';
+                %>
+                <%= order.logistics.pickupAddress || fallbackPickup %>
+                  <% } else { %>
+                    <%= settings.storeInfo.address %> (Drop-off ke Gerai)
+                      <% } %>
           </span>
         </div>
         <div class="logistics-info-item">
           <span class="logistics-info-label">DELIVERY METHOD: <%= order.logistics.deliveryMethod.toUpperCase() %></span>
           <span class="logistics-info-value">
             <% if(order.logistics.deliveryMethod==='delivery' ) { %>
-              <% 
-                const fallbackDelivery = (order.user && order.user.addresses && order.user.addresses.length > 0) ? order.user.addresses[0].fullAddress : 'Belum ditentukan';
-              %>
-              <%= order.logistics.deliveryAddress || fallbackDelivery %>
-                <% } else { %>
-                  <%= settings.storeInfo.address %> (Ambil di Gerai)
-                  <% } %>
+              <% const fallbackDelivery=(order.user && order.user.addresses && order.user.addresses.length> 0) ?
+                order.user.addresses[0].fullAddress : 'Belum ditentukan';
+                %>
+                <%= order.logistics.deliveryAddress || fallbackDelivery %>
+                  <% } else { %>
+                    <%= settings.storeInfo.address %> (Ambil di Gerai)
+                      <% } %>
           </span>
         </div>
       </div>
@@ -238,66 +226,59 @@
           </span>
         </div>
 
-        <% 
-          const SERVICE_PRICES = {
-            "Deep Clean (Regular)": 40000,
-            "Fast Clean": 25000,
-            "Deep Clean Express": 60000,
-            "Premium Repaint": 150000
-          };
-          const ADDON_PRICES = {
-            "Unyellowing": 50000,
-            "Glue & Repress": 60000,
-            "Leather Polish": 30000,
-            "Deodorizer": 15000
-          };
-        %>
+        <% const SERVICE_PRICES={ "Deep Clean (Regular)" : 40000, "Fast Clean" : 25000, "Deep Clean Express" :
+          60000, "Premium Repaint" : 150000 }; const ADDON_PRICES={ "Unyellowing" : 50000, "Glue & Repress" :
+          60000, "Leather Polish" : 30000, "Deodorizer" : 15000 }; %>
 
-        <% order.items.forEach(item=> { %>
-          <div class="order-summary-item-wrapper" style="margin-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px;">
-            <div class="order-summary-item">
-              <div>
-                <span class="summary-item-name">
-                  <%= item.shoeName %>
-                </span>
-                <span class="summary-item-service">
-                  <%= (item.serviceType || '' ).toUpperCase() %>
-                </span>
-              </div>
-              <span class="summary-item-price">Rp <%= (SERVICE_PRICES[item.serviceType] || 40000).toLocaleString('id-ID') %></span>
-            </div>
-            <% if (item.addons && item.addons.length > 0) { %>
-              <% item.addons.forEach(addon => { %>
-                <div class="order-summary-addon" style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-top: 4px; padding-left: 12px;">
-                  <span class="summary-addon-name">+ <%= addon %></span>
-                  <span class="summary-addon-price">Rp <%= (ADDON_PRICES[addon] || 0).toLocaleString('id-ID') %></span>
+          <% order.items.forEach(item=> { %>
+            <div class="order-summary-item-wrapper"
+              style="margin-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px;">
+              <div class="order-summary-item">
+                <div>
+                  <span class="summary-item-name">
+                    <%= item.shoeName %>
+                  </span>
+                  <span class="summary-item-service">
+                    <%= (item.serviceType || '' ).toUpperCase() %>
+                  </span>
                 </div>
-              <% }) %>
-            <% } %>
-          </div>
-          <% }) %>
-
-            <div class="order-summary-divider"></div>
-
-            <% const isCourier=(order.logistics && (order.logistics.pickupMethod==='pickup' ||
-              order.logistics.deliveryMethod==='delivery' )); const logisticsFee=isCourier ? 15000 : 0; %>
-
-              <div class="order-summary-row">
-                <span>Biaya Jemput/Antar</span>
-                <span class="summary-price">Rp <%= logisticsFee.toLocaleString('id-ID') %></span>
+                <span class="summary-item-price">Rp <%= (SERVICE_PRICES[item.serviceType] ||
+                    40000).toLocaleString('id-ID') %></span>
               </div>
-
-              <div class="order-summary-estimate">
-                <i class="fa-regular fa-clock"></i> ESTIMASI SELESAI
-                <span class="estimate-badge">3-5 Hari Kerja</span>
-              </div>
+              <% if (item.addons && item.addons.length> 0) { %>
+                <% item.addons.forEach(addon=> { %>
+                  <div class="order-summary-addon"
+                    style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-top: 4px; padding-left: 12px;">
+                    <span class="summary-addon-name">+ <%= addon %></span>
+                    <span class="summary-addon-price">Rp <%= (ADDON_PRICES[addon] || 0).toLocaleString('id-ID') %>
+                        </span>
+                  </div>
+                  <% }) %>
+                    <% } %>
+            </div>
+            <% }) %>
 
               <div class="order-summary-divider"></div>
 
-              <div class="order-summary-row order-summary-total">
-                <span>TOTAL PEMBAYARAN</span>
-                <span class="summary-total-price">Rp <%= order.totalPrice.toLocaleString('id-ID') %></span>
-              </div>
+              <% const isCourier=(order.logistics && (order.logistics.pickupMethod==='pickup' ||
+                order.logistics.deliveryMethod==='delivery' )); const logisticsFee=isCourier ? 15000 : 0; %>
+
+                <div class="order-summary-row">
+                  <span>Biaya Jemput/Antar</span>
+                  <span class="summary-price">Rp <%= logisticsFee.toLocaleString('id-ID') %></span>
+                </div>
+
+                <div class="order-summary-estimate">
+                  <i class="fa-regular fa-clock"></i> ESTIMASI SELESAI
+                  <span class="estimate-badge">3-5 Hari Kerja</span>
+                </div>
+
+                <div class="order-summary-divider"></div>
+
+                <div class="order-summary-row order-summary-total">
+                  <span>TOTAL PEMBAYARAN</span>
+                  <span class="summary-total-price">Rp <%= order.totalPrice.toLocaleString('id-ID') %></span>
+                </div>
       </div>
     </div>
   </div>

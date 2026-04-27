@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Action Buttons Event Listeners
     document.querySelectorAll('.next-action-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
             console.log('Action button clicked:', btn.getAttribute('data-status'));
             const action = btn.getAttribute('data-action');
             const status = btn.getAttribute('data-status');
