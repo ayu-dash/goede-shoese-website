@@ -17,7 +17,7 @@
 <div class="orders-section" id="active-orders-section">
   <div class="orders-section-header">
     <h3 class="dash-subtitle dash-subtitle--upper">PESANAN AKTIF</h3>
-    <% const activeOrders = orders.filter(o => ["pending", "pickup", "in-progress", "delivery"].includes(o.status)) %>
+    <% const activeOrders = orders.filter(function(o) { return ["pending", "pickup", "in-progress", "delivery"].includes(o.status) }) %>
     <span class="orders-badge"><%= activeOrders.length %> BERLANGSUNG</span>
   </div>
 
@@ -26,7 +26,7 @@
       <p>Tidak ada pesanan aktif saat ini.</p>
     </div>
   <% } else { %>
-    <% activeOrders.forEach(order => { %>
+    <% activeOrders.forEach(function(order) { %>
       <div class="active-order-card" data-order-status="proses">
         <div class="active-order-img">
           <% const activeShoePhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos; %>
@@ -41,7 +41,7 @@
                 <%= order.items.length > 1 ? `+ ${order.items.length - 1} lainnya` : '' %>
               </h4>
               <div class="active-order-services">
-                <% order.items[0].addons.forEach(addon => { %>
+                <% order.items[0].addons.forEach(function(addon) { %>
                   <span class="service-badge"><%= addon.toUpperCase() %></span>
                 <% }) %>
                 <span class="service-badge"><%= order.items[0].serviceType.toUpperCase() %></span>
@@ -91,13 +91,13 @@
 <div class="orders-section" id="history-orders-section">
   <h3 class="dash-subtitle dash-subtitle--upper">RIWAYAT PESANAN</h3>
 
-  <% const historyOrders = orders.filter(o => ["completed", "cancelled"].includes(o.status)) %>
+  <% const historyOrders = orders.filter(function(o) { return ["completed", "cancelled"].includes(o.status) }) %>
   
   <div class="history-grid">
     <% if (historyOrders.length === 0) { %>
       <p class="empty-text">Belum ada riwayat pesanan.</p>
     <% } else { %>
-      <% historyOrders.forEach(order => { %>
+      <% historyOrders.forEach(function(order) { %>
         <div class="history-card" data-order-status="<%= order.status === 'completed' ? 'selesai' : 'batal' %>">
           <div class="history-card-top">
             <% const histShoePhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos; %>

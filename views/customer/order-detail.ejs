@@ -10,66 +10,60 @@
           Date(order.updatedAt).toLocaleDateString('id-ID', { day: 'numeric' , month: 'short' , year: 'numeric' }) %>
       </p>
     </div>
-    <% let statusClass="process" ; if(order.status==='completed' ) statusClass="done" ; if(order.status==='cancelled' )
+    <% var statusClass="process" ; if(order.status==='completed' ) statusClass="done" ; if(order.status==='cancelled' )
       statusClass="cancel" ; %>
       <span class="status-badge status-badge--<%= statusClass %>">
-        <%= order.status.toUpperCase() %>
+        <%= (order.status || 'PENDING' ).toUpperCase() %>
       </span>
   </div>
 
   <div class="detail-layout">
     <!-- LEFT: ORDER ITEMS -->
     <div class="detail-items-col">
-      <% order.items.forEach((item, index)=> { %>
+      <% order.items.forEach(function(item, index) { %>
         <div class="detail-item-card">
           <div class="detail-item-top">
-            <% const detailShoePhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos; %>
-            <img src="<%= (detailShoePhoto && detailShoePhoto.length > 0) ? detailShoePhoto[0] : '/images/hero-shoe.png' %>" alt="<%= item.shoeName %>" class="detail-item-img" />
-            <div class="detail-item-info">
-              <h4 class="detail-item-name">
-                <%= item.shoeName %>
-              </h4>
-              <span class="detail-item-service">
-                <%= item.serviceType %>
-                  <%= item.addons.length> 0 ? '+ ' + item.addons.join(', ') : '' %>
-              </span>
-            </div>
-            <% const steps=[]; steps.push({ key: 'pending' , label: 'Submit' , icon: 'fa-file-invoice' }); if
-              (order.payment.method !=='cod' ) { steps.push({ key: 'payment' , label: 'Pembayaran' ,
-              icon: 'fa-credit-card' }); } // If pickup method is self, change pending label if status is pending if
-              (order.logistics.pickupMethod==='self' && order.status==='pending' ) { steps[0].label='Menunggu Antaran' ;
-              } if (order.logistics.pickupMethod==='pickup' ) { steps.push({ key: 'pickup' , label: 'Dijemput' ,
-              icon: 'fa-truck-pickup' }); } // Core Steps steps.push({ key: 'received' , label: 'Diterima' ,
-              icon: 'fa-box-open' }); steps.push({ key: 'validating-in' , label: 'Cek Kondisi' ,
-              icon: 'fa-clipboard-check' }); steps.push({ key: 'in-progress' , label: 'Cuci' , icon: 'fa-soap' });
-              steps.push({ key: 'quality-check' , label: 'Cek Hasil' , icon: 'fa-magnifying-glass' }); // Step: Ready
-              for Pickup (Only if delivery method is 'self' ) if (order.logistics.deliveryMethod==='self' ) {
-              steps.push({ key: 'ready-to-pickup' , label: 'Menunggu Diambil' , icon: 'fa-box-archive' }); } if
-              (order.logistics.deliveryMethod==='delivery' ) { steps.push({ key: 'delivery' , label: 'Diantar' ,
-              icon: 'fa-truck-fast' }); } // Step: Final Payment Validation (Only for COD) if
-              (order.payment.method==='cod' ) { steps.push({ key: 'payment-cod' , label: 'Validasi Bayar' ,
-              icon: 'fa-hand-holding-dollar' }); } steps.push({ key: 'completed' , label: 'Selesai' ,
-              icon: 'fa-check-double' }); let effectiveStatus=order.status; // If delivery is self and status is
-              quality-check, it means it's ready for pickup if (order.logistics.deliveryMethod==='self' &&
-              effectiveStatus==='quality-check' ) { effectiveStatus='ready-to-pickup' ; } // If COD and order is at the
-              final logistics stage (delivery or ready-to-pickup), // we move the effective status to 'payment-cod' so
-              the user sees it's time to pay. if (order.payment.method==='cod' && (effectiveStatus==='delivery' ||
-              effectiveStatus==='ready-to-pickup' )) { effectiveStatus='payment-cod' ; } const
-              currentIdx=steps.findIndex(s=> s.key === effectiveStatus);
-              const pct = currentIdx >= 0 ? Math.round((currentIdx / (steps.length - 1)) * 100) : 0;
+            <% var detailShoePhoto=null; if (order.statusHistory) { for (var i=0; i < order.statusHistory.length; i++) {
+              if (order.statusHistory[i].status==='validating-in' && order.statusHistory[i].photos &&
+              order.statusHistory[i].photos.length> 0) {
+              detailShoePhoto = order.statusHistory[i].photos[0];
+              break;
+              }
+              }
+              }
               %>
-              <div class="detail-item-pct">
-                <span class="detail-pct-num">
-                  <%= pct %>%
+              <img src="<%= detailShoePhoto || '/images/hero-shoe.png' %>" alt="<%= item.shoeName %>"
+                class="detail-item-img" />
+              <div class="detail-item-info">
+                <h4 class="detail-item-name">
+                  <%= item.shoeName %>
+                </h4>
+                <span class="detail-item-service">
+                  <%= item.serviceType %>
+                    <%= (item.addons && item.addons.length> 0) ? '+ ' + item.addons.join(', ') : '' %>
                 </span>
-                <span class="detail-pct-label">COMPLETED</span>
               </div>
+
+              <% var steps=[ { key: 'pending' , label: 'Submit' , icon: 'fa-file-invoice' }, { key: 'pickup' ,
+                label: 'Penjemputan' , icon: 'fa-truck-pickup' }, { key: 'validating-in' , label: 'Cek Kondisi' ,
+                icon: 'fa-clipboard-check' }, { key: 'in-progress' , label: 'Pencucian' , icon: 'fa-soap' }, {
+                key: 'quality-check' , label: 'Cek Hasil' , icon: 'fa-magnifying-glass' }, { key: 'delivery' ,
+                label: 'Pengantaran' , icon: 'fa-truck' }, { key: 'completed' , label: 'Selesai' ,
+                icon: 'fa-check-circle' } ]; var effectiveStatus=order.status; var currentIdx=-1; for (var j=0; j <
+                steps.length; j++) { if (steps[j].key===effectiveStatus) { currentIdx=j; break; } } var pct=currentIdx>=
+                0 ? Math.round((currentIdx / (steps.length - 1)) * 100) : 0;
+                %>
+                <div class="detail-item-pct">
+                  <span class="detail-pct-num">
+                    <%= pct %>%
+                  </span>
+                  <span class="detail-pct-label">COMPLETED</span>
+                </div>
           </div>
 
-          <!-- Progress Timeline (Detailed) -->
           <div class="timeline" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--gray-light);">
-            <% steps.forEach((step, index)=> { %>
-              <% let stepStatusClass="" ; if (order.status==='cancelled' ) { stepStatusClass="cancelled" ; } else if
+            <% steps.forEach(function(step, index) { %>
+              <% var stepStatusClass="" ; if (order.status==='cancelled' ) { stepStatusClass="cancelled" ; } else if
                 (index < currentIdx || order.status==='completed' ) { stepStatusClass="completed" ; } else if
                 (index===currentIdx) { stepStatusClass="active" ; } %>
                 <div class="timeline-step <%= stepStatusClass %>" style="min-width: 60px;">
@@ -80,19 +74,20 @@
                 </div>
 
                 <% if (index < steps.length - 1) { %>
-                  <% let lineStatusClass="" ; if (order.status !=='cancelled' && (index < currentIdx ||
+                  <% var lineStatusClass="" ; if (order.status !=='cancelled' && (index < currentIdx ||
                     order.status==='completed' )) { lineStatusClass="completed" ; } %>
                     <div class="timeline-line <%= lineStatusClass %>"></div>
                     <% } %>
-                      <% }) %>
+                      <% }); %>
           </div>
         </div>
-        <% }) %>
+        <% }); %>
 
           <!-- Dokumentasi Hasil & Kondisi -->
-          <% const validatingInEntry=order.statusHistory.find(h=> h.status === 'validating-in');
-            const qualityCheckEntry = order.statusHistory.find(h => h.status === 'quality-check');
-            %>
+          <% var validatingInEntry=null; var qualityCheckEntry=null; if (order.statusHistory) { for (var k=0; k <
+            order.statusHistory.length; k++) { if (order.statusHistory[k].status==='validating-in' )
+            validatingInEntry=order.statusHistory[k]; if (order.statusHistory[k].status==='quality-check' )
+            qualityCheckEntry=order.statusHistory[k]; } } %>
 
             <% if (validatingInEntry || qualityCheckEntry) { %>
               <div class="detail-item-card" style="margin-top: 20px;">
@@ -103,77 +98,60 @@
                 </h5>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
-                  <!-- Kondisi Awal -->
                   <% if (validatingInEntry) { %>
-                    <div
-                      style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column;">
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
                       <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <span
-                          style="font-size: 11px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;">Kondisi
+                          style="font-size: 11px; font-weight: 800; color: var(--navy); text-transform: uppercase;">Kondisi
                           Awal</span>
-                        <span style="font-size: 10px; color: var(--text-secondary); font-weight: 600;">
-                          <%= new Date(validatingInEntry.updatedAt).toLocaleDateString('id-ID', { day: 'numeric' ,
-                            month: 'short' , year: 'numeric' }) %>
+                        <span style="font-size: 10px; color: var(--text-secondary);">
+                          <%= new Date(validatingInEntry.updatedAt).toLocaleDateString('id-ID') %>
                         </span>
                       </div>
                       <% if (validatingInEntry.note) { %>
                         <div
-                          style="font-size: 13px; color: var(--text-primary); line-height: 1.6; margin-bottom: 16px; padding: 12px; background: #fff; border-radius: 8px; border-left: 4px solid var(--navy); box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                          <strong>Catatan:</strong><br />
+                          style="font-size: 13px; margin-bottom: 12px; padding: 10px; background: #fff; border-radius: 6px; border-left: 4px solid var(--navy);">
                           <%= validatingInEntry.note %>
                         </div>
                         <% } %>
                           <% if (validatingInEntry.photos && validatingInEntry.photos.length> 0) { %>
-                            <div
-                              style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
-                              <% validatingInEntry.photos.forEach(photo=> { %>
-                                <div style="flex-shrink: 0; position: relative;">
-                                  <img src="<%= photo %>" alt="Kondisi Awal"
-                                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s;"
-                                    onclick="window.open('<%= photo %>', '_blank')"
-                                    onmouseover="this.style.transform='scale(1.05)'"
-                                    onmouseout="this.style.transform='scale(1)'" />
-                                </div>
-                                <% }) %>
+                            <div style="display: flex; gap: 8px; overflow-x: auto;">
+                              <% validatingInEntry.photos.forEach(function(photo) { %>
+                                <img src="<%= photo %>"
+                                  style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer;"
+                                  onclick="window.open(this.src)">
+                                <% }); %>
                             </div>
                             <% } %>
                     </div>
                     <% } %>
 
-                      <!-- Hasil Akhir -->
                       <% if (qualityCheckEntry) { %>
                         <div
-                          style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 1px solid #dcfce7; display: flex; flex-direction: column;">
+                          style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 1px solid #dcfce7;">
                           <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <span
-                              style="font-size: 11px; font-weight: 800; color: #166534; text-transform: uppercase; letter-spacing: 0.8px;">Hasil
+                              style="font-size: 11px; font-weight: 800; color: #166534; text-transform: uppercase;">Hasil
                               Cuci</span>
-                            <span style="font-size: 10px; color: #166534; font-weight: 600;">
-                              <%= new Date(qualityCheckEntry.updatedAt).toLocaleDateString('id-ID', { day: 'numeric' ,
-                                month: 'short' , year: 'numeric' }) %>
+                            <span style="font-size: 10px; color: #166534;">
+                              <%= new Date(qualityCheckEntry.updatedAt).toLocaleDateString('id-ID') %>
                             </span>
                           </div>
                           <% if (qualityCheckEntry.note) { %>
                             <div
-                              style="font-size: 13px; color: #166534; line-height: 1.6; margin-bottom: 16px; padding: 12px; background: #fff; border-radius: 8px; border-left: 4px solid #22c55e; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                              <strong>Catatan Petugas:</strong><br />
+                              style="font-size: 13px; margin-bottom: 12px; padding: 10px; background: #fff; border-radius: 6px; border-left: 4px solid #22c55e;">
                               <%= qualityCheckEntry.note %>
                             </div>
                             <% } %>
                               <% if (qualityCheckEntry.photos && qualityCheckEntry.photos.length> 0) { %>
-                                <div
-                                  style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
-                                  <% qualityCheckEntry.photos.forEach(photo=> { %>
-                                    <div style="flex-shrink: 0; position: relative;">
-                                      <img src="<%= photo %>" alt="Hasil Cuci"
-                                        style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s;"
-                                        onclick="window.open('<%= photo %>', '_blank')"
-                                        onmouseover="this.style.transform='scale(1.05)'"
-                                        onmouseout="this.style.transform='scale(1)'" />
-                                    </div>
-                                    <% }) %>
+                                <div style="display: flex; gap: 8px; overflow-x: auto;">
+                                  <% qualityCheckEntry.photos.forEach(function(photo) { %>
+                                    <img src="<%= photo %>"
+                                      style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer;"
+                                      onclick="window.open(this.src)">
+                                    <% }); %>
                                 </div>
                                 <% } %>
                         </div>
@@ -185,32 +163,28 @@
 
     <!-- RIGHT: LOGISTICS & SUMMARY -->
     <div class="detail-sidebar-col">
-      <!-- Logistics Details -->
       <div class="detail-logistics-card">
-        <h4 class="detail-card-title">
-          <i class="fa-solid fa-truck"></i> Logistics Details
-        </h4>
+        <h4 class="detail-card-title"><i class="fa-solid fa-truck"></i> Logistics Details</h4>
         <div class="logistics-info-item">
-          <span class="logistics-info-label">PICKUP METHOD: <%= order.logistics.pickupMethod.toUpperCase() %></span>
+          <span class="logistics-info-label">PICKUP: <%= (order.logistics.pickupMethod || '' ).toUpperCase() %></span>
           <span class="logistics-info-value">
             <% if(order.logistics.pickupMethod==='pickup' ) { %>
-              <% const fallbackPickup=(order.user && order.user.addresses && order.user.addresses.length> 0) ?
-                order.user.addresses[0].fullAddress : 'Belum ditentukan';
-                %>
-                <%= order.logistics.pickupAddress || fallbackPickup %>
+              <% var fbP=(order.user && order.user.addresses && order.user.addresses.length> 0) ?
+                order.user.addresses[0].fullAddress : 'Belum ditentukan'; %>
+                <%= order.logistics.pickupAddress || fbP %>
                   <% } else { %>
-                    <%= settings.storeInfo.address %> (Drop-off ke Gerai)
+                    <%= settings.storeInfo.address %> (Drop-off)
                       <% } %>
           </span>
         </div>
         <div class="logistics-info-item">
-          <span class="logistics-info-label">DELIVERY METHOD: <%= order.logistics.deliveryMethod.toUpperCase() %></span>
+          <span class="logistics-info-label">DELIVERY: <%= (order.logistics.deliveryMethod || '' ).toUpperCase() %>
+          </span>
           <span class="logistics-info-value">
             <% if(order.logistics.deliveryMethod==='delivery' ) { %>
-              <% const fallbackDelivery=(order.user && order.user.addresses && order.user.addresses.length> 0) ?
-                order.user.addresses[0].fullAddress : 'Belum ditentukan';
-                %>
-                <%= order.logistics.deliveryAddress || fallbackDelivery %>
+              <% var fbD=(order.user && order.user.addresses && order.user.addresses.length> 0) ?
+                order.user.addresses[0].fullAddress : 'Belum ditentukan'; %>
+                <%= order.logistics.deliveryAddress || fbD %>
                   <% } else { %>
                     <%= settings.storeInfo.address %> (Ambil di Gerai)
                       <% } %>
@@ -220,72 +194,59 @@
 
       <!-- Ringkasan Pesanan -->
       <div class="order-summary-card">
-        <div class="order-summary-header-row">
-          <h4 class="order-summary-title">Ringkasan Pesanan</h4>
-          <span class="summary-status-badge">
-            <%= (order.payment && order.payment.status ? order.payment.status : 'PENDING' ).toUpperCase() %>
-          </span>
-        </div>
-
-        <% const SERVICE_PRICES={ "Deep Clean (Regular)" : 40000, "Fast Clean" : 25000, "Deep Clean Express" :
-          60000, "Premium Repaint" : 150000 }; const ADDON_PRICES={ "Unyellowing" : 50000, "Glue & Repress" :
+        <h4 class="order-summary-title">Ringkasan Pesanan</h4>
+        <% var SERVICE_PRICES={ "Deep Clean (Regular)" : 40000, "Fast Clean" : 25000, "Deep Clean Express" :
+          60000, "Premium Repaint" : 150000 }; var ADDON_PRICES={ "Unyellowing" : 50000, "Glue & Repress" :
           60000, "Leather Polish" : 30000, "Deodorizer" : 15000 }; %>
 
-          <% order.items.forEach(item=> { %>
+          <% order.items.forEach(function(item) { %>
             <div class="order-summary-item-wrapper"
-              style="margin-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px;">
-              <div class="order-summary-item">
+              style="margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+              <div class="order-summary-item" style="display: flex; justify-content: space-between;">
                 <div>
-                  <span class="summary-item-name">
+                  <span style="display: block; font-weight: 700;">
                     <%= item.shoeName %>
                   </span>
-                  <span class="summary-item-service">
+                  <span style="font-size: 11px; color: #666;">
                     <%= (item.serviceType || '' ).toUpperCase() %>
                   </span>
                 </div>
-                <span class="summary-item-price">Rp <%= (SERVICE_PRICES[item.serviceType] ||
+                <span style="font-weight: 700;">Rp <%= (SERVICE_PRICES[item.serviceType] ||
                     40000).toLocaleString('id-ID') %></span>
               </div>
               <% if (item.addons && item.addons.length> 0) { %>
-                <% item.addons.forEach(addon=> { %>
-                  <div class="order-summary-addon"
-                    style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-top: 4px; padding-left: 12px;">
-                    <span class="summary-addon-name">+ <%= addon %></span>
-                    <span class="summary-addon-price">Rp <%= (ADDON_PRICES[addon] || 0).toLocaleString('id-ID') %>
-                        </span>
+                <% item.addons.forEach(function(addon) { %>
+                  <div
+                    style="display: flex; justify-content: space-between; font-size: 11px; color: #666; margin-top: 4px; padding-left: 10px;">
+                    <span>+ <%= addon %></span>
+                    <span>Rp <%= (ADDON_PRICES[addon] || 0).toLocaleString('id-ID') %></span>
                   </div>
-                  <% }) %>
+                  <% }); %>
                     <% } %>
             </div>
-            <% }) %>
+            <% }); %>
 
-              <div class="order-summary-divider"></div>
-
-              <% if (order.logistics.pickupFee > 0) { %>
-                <div class="order-summary-row">
+              <% if (order.logistics.pickupFee> 0) { %>
+                <div class="order-summary-row"
+                  style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                   <span>Biaya Penjemputan</span>
-                  <span class="summary-price">Rp <%= (order.logistics.pickupFee ?? 0).toLocaleString('id-ID') %></span>
+                  <span>Rp <%= (order.logistics.pickupFee || 0).toLocaleString('id-ID') %></span>
                 </div>
-              <% } %>
+                <% } %>
 
-              <% if (order.logistics.deliveryFee > 0) { %>
-                <div class="order-summary-row">
-                  <span>Biaya Pengantaran</span>
-                  <span class="summary-price">Rp <%= (order.logistics.deliveryFee ?? 0).toLocaleString('id-ID') %></span>
-                </div>
-              <% } %>
+                  <% if (order.logistics.deliveryFee> 0) { %>
+                    <div class="order-summary-row"
+                      style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                      <span>Biaya Pengantaran</span>
+                      <span>Rp <%= (order.logistics.deliveryFee || 0).toLocaleString('id-ID') %></span>
+                    </div>
+                    <% } %>
 
-                <div class="order-summary-estimate">
-                  <i class="fa-regular fa-clock"></i> ESTIMASI SELESAI
-                  <span class="estimate-badge">3-5 Hari Kerja</span>
-                </div>
-
-                <div class="order-summary-divider"></div>
-
-                <div class="order-summary-row order-summary-total">
-                  <span>TOTAL PEMBAYARAN</span>
-                  <span class="summary-total-price">Rp <%= order.totalPrice.toLocaleString('id-ID') %></span>
-                </div>
+                      <div class="order-summary-row order-summary-total"
+                        style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.1rem; color: var(--navy);">
+                        <span>TOTAL</span>
+                        <span>Rp <%= order.totalPrice.toLocaleString('id-ID') %></span>
+                      </div>
       </div>
     </div>
   </div>

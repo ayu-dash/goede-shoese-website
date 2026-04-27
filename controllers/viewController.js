@@ -98,7 +98,7 @@ exports.renderCustomerOrderDetail = async (req, res) => {
       user: req.user._id,
     }).populate("user");
 
-    const settings = await Settings.findOne() || { pickupFee: 15000, deliveryFee: 15000 };
+    const settings = await Settings.findOne() || { shippingRatePerKm: 5000 };
 
     res.render("customer/order-detail", { activePage: "my-orders", order, settings });
   } catch (err) {
@@ -248,7 +248,11 @@ exports.renderStaffHistory = async (req, res) => {
 
 exports.renderStaffOrderDetail = async (req, res) => {
   try {
-    const settings = await Settings.findOne() || { pickupFee: 15000, deliveryFee: 15000 };
+    const order = await Order.findById(req.params.id).populate("user");
+    if (!order) {
+      return res.status(404).render("error", { message: "Pesanan tidak ditemukan." });
+    }
+    const settings = await Settings.findOne() || { shippingRatePerKm: 5000 };
     res.render("staff/order-detail", { activePage: "washing", order, settings });
   } catch (err) {
     res.status(500).render("error", { message: "Gagal memuat detail pesanan." });
