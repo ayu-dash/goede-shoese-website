@@ -14,6 +14,7 @@
   <div id="goede-dynamic-data" 
        data-mainservices="<%= JSON.stringify(mainServices) %>" 
        data-addons="<%= JSON.stringify(addOns) %>" 
+       data-shipping-rate="<%= settings.shippingRatePerKm || 5000 %>"
        style="display: none;"></div>
 
   <script>
@@ -39,8 +40,8 @@
       window.DYNAMIC_PRICES = {
         SERVICES: dynamicServices,
         ADDONS: dynamicAddons,
-        PICKUP_FEE: <%= settings.shippingRatePerKm || 5000 %>,
-        DELIVERY_FEE: <%= settings.shippingRatePerKm || 5000 %>
+        PICKUP_FEE: parseInt(dataContainer.dataset.shippingRate),
+        DELIVERY_FEE: parseInt(dataContainer.dataset.shippingRate)
       };
       window.DYNAMIC_SERVICES = dynamicMetadata;
     } catch (err) {

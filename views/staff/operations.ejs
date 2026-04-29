@@ -8,8 +8,8 @@
     </div>
     <div class="stats-mini" style="display: flex; gap: 15px;">
         <div class="stat-mini-item">
-            <span style="font-size: 11px; opacity: 0.7; display: block; text-transform: uppercase;">Total Aktif</span>
-            <span style="font-size: 18px; font-weight: 700; color: var(--navy);"><%= orders.length %></span>
+            <span style="font-size: 12px; opacity: 0.7; display: block; text-transform: uppercase; color: var(--text-primary); font-weight: 600;">Total Aktif</span>
+            <span style="font-size: 18px; font-weight: 700; color: var(--navy-dark); font-weight: 700;"><%= orders.length %></span>
         </div>
     </div>
   </div>
@@ -17,22 +17,34 @@
   <div style="display: flex; gap: 15px; margin-bottom: 20px; padding-top: 15px;">
     <div style="flex: 1; position: relative;">
       <i class="fa-solid fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
-      <input type="text" id="searchInput" class="form-control" placeholder="Cari Order ID atau Nama Pelanggan..." style="width: 100%; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 15px 10px 40px; background: #f8fafc;">
+      <input type="text" id="searchInput" class="form-control" placeholder="Cari Order ID atau Nama Pelanggan..." style="width: 100%; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 15px 10px 40px; background: #f8fafc; font-size: 14px; font-family: var(--font-body);">
     </div>
+    
     <div style="width: 250px;">
-      <select id="statusFilter" class="form-control" style="width: 100%; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 15px; background: #f8fafc; font-weight: 600; color: var(--navy);">
-        <option value="all">Semua Status</option>
-        <option value="pending">Submit (Menunggu)</option>
-        <option value="payment">Pembayaran</option>
-        <option value="pickup">Penjemputan</option>
-        <option value="received">Diterima (Siap Dicuci)</option>
-        <option value="validating-in">Cek Kondisi</option>
-        <option value="in-progress">Sedang Dicuci</option>
-        <option value="quality-check">Cek Hasil (QC)</option>
-        <option value="delivery">Pengantaran</option>
-      </select>
+      <div class="custom-select-wrapper" id="customStatusSelect">
+        <div class="custom-select-trigger">
+          <span class="custom-select-text">Semua Status</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        
+        <ul class="custom-select-options">
+          <li class="custom-option selected" data-value="all">Semua Status</li>
+          <li class="custom-option" data-value="pending">Submit (Menunggu)</li>
+          <li class="custom-option" data-value="payment">Pembayaran</li>
+          <li class="custom-option" data-value="pickup">Penjemputan</li>
+          <li class="custom-option" data-value="received">Diterima (Siap Dicuci)</li>
+          <li class="custom-option" data-value="validating-in">Cek Kondisi</li>
+          <li class="custom-option" data-value="in-progress">Sedang Dicuci</li>
+          <li class="custom-option" data-value="quality-check">Cek Hasil (QC)</li>
+          <li class="custom-option" data-value="delivery">Pengantaran</li>
+        </ul>
+        
+        <input type="hidden" id="statusFilter" class="form-select" value="all">
+      </div>
     </div>
-  </div>
+    </div>
 
   <div class="admin-table-container">
     <table class="admin-table">
@@ -44,14 +56,14 @@
           <th>METODE</th>
           <th>STATUS OPERASIONAL</th>
           <th>TENGGAT</th>
-          <th>AKSI TERSEDIA</th>
+          <th>AKSI</th>
         </tr>
       </thead>
       <tbody>
         <% if (orders && orders.length > 0) { %>
           <% orders.forEach(order => { %>
             <tr class="order-row" data-status="<%= order.status %>">
-              <td style="font-weight: 700; color: var(--navy);"><%= order.orderId %></td>
+              <td style="font-weight: 700; color: var(--navy-dark);"><%= order.orderId %></td>
               <td>
                 <span class="table-client-name"><%= order.user ? order.user.name : 'Unknown' %></span>
                 <span class="table-client-sub" style="display: block; font-size: 11px;">
@@ -59,7 +71,7 @@
                 </span>
               </td>
               <td>
-                <span class="badge badge-layanan-blue" style="font-size: 10px;">
+                <span class="badge badge-layanan-blue" style="font-size: 11px;">
                     <%= order.items[0]?.serviceType %>
                 </span>
               </td>
@@ -100,14 +112,14 @@
                   deadline.setDate(deadline.getDate() + 3);
                   const isOverdue = new Date() > deadline;
                 %>
-                <span style="font-size: 11px; font-weight: 600; color: <%= isOverdue ? '#e11d48' : 'inherit' %>">
+                <span class="<%= isOverdue ? 'text-overdue' : '' %>" style="font-size: 12px; font-weight: 600;">
                     <%= deadline.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) %>
                 </span>
               </td>
               <td>
                 <div style="display: flex; gap: 6px;">
                     <a href="/staff/order/<%= order._id %>" class="btn btn-primary btn-sm" style="padding: 6px 14px; font-size: 11px;">
-                        Lihat Detail
+                      Detail
                     </a>
                 </div>
               </td>
@@ -127,6 +139,46 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- 1. LOGIKA UNTUK CUSTOM DROPDOWN ---
+    const customWrapper = document.getElementById('customStatusSelect');
+    const customTrigger = customWrapper.querySelector('.custom-select-trigger');
+    const customTextSpan = customWrapper.querySelector('.custom-select-text');
+    const customOptions = customWrapper.querySelectorAll('.custom-option');
+    const hiddenStatusInput = document.getElementById('statusFilter');
+
+    customTrigger.addEventListener('click', function(e) {
+      e.stopPropagation(); 
+      customWrapper.classList.toggle('open');
+    });
+
+    customOptions.forEach(option => {
+      option.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        // Update teks dan value
+        customTextSpan.textContent = this.textContent;
+        hiddenStatusInput.value = this.getAttribute('data-value');
+        
+        // Update UI yang dipilih
+        customOptions.forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        
+        customWrapper.classList.remove('open');
+        
+        // PENTING: Trigger event change agar script filter di bawah berjalan
+        hiddenStatusInput.dispatchEvent(new Event('change')); 
+      });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!customWrapper.contains(e.target)) {
+        customWrapper.classList.remove('open');
+      }
+    });
+    // --- END LOGIKA CUSTOM DROPDOWN ---
+
+    // --- 2. LOGIKA FILTER TABEL ASLI (TIDAK ADA YANG DIUBAH) ---
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const tableRows = document.querySelectorAll('.order-row');

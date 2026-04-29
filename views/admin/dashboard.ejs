@@ -55,17 +55,28 @@
         <h3>Analisis Pesanan</h3>
         <p>VOLUME PESANAN PER BULAN</p>
       </div>
-      <div class="chart-controls">
-        <div class="badge badge-layanan-gray"><span
-            style="width:8px;height:8px;background:#0D47A1;border-radius:50%;display:inline-block;margin-right:6px;"></span>Tahun
+      <div class="chart-controls" style="display: flex; gap: 10px; align-items: center;">
+        <div class="badge badge-layanan-gray">
+          <span style="width:8px;height:8px;background:#0D47A1;border-radius:50%;display:inline-block;margin-right:6px;"></span>Tahun
         </div>
-        <select onchange="window.location.href='?year=' + this.value">
-          <% availableYears.forEach(year=> { %>
-            <option value="<%= year %>" <%=targetYear===year ? 'selected' : '' %>><%= year %>
-            </option>
-            <% }) %>
-        </select>
-      </div>
+  
+        <div class="custom-select-wrapper" id="customYearSelect" style="width: 100px;">
+          <div class="custom-select-trigger" style="padding: 6px 12px; font-size: 13px;">
+            <span class="custom-select-text"><%= targetYear || new Date().getFullYear() %></span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </div>
+    
+    <ul class="custom-select-options">
+      <% availableYears.forEach(year => { %>
+        <li class="custom-option <%= targetYear === year ? 'selected' : '' %>" data-value="<%= year %>">
+          <%= year %>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+  </div>
     </div>
 
     <div class="bar-chart-mock">
@@ -226,7 +237,7 @@
                   </div>
                   <% } %>
         </div>
-        <button class="btn-manage-staff" onclick="window.location.href='/admin/karyawan'">Manage All Staff</button>
+        <button class="btn-manage-staff" onclick="window.location.href='/admin/employees'">Manage All Staff</button>
       </div>
 
     </div>

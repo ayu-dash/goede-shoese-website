@@ -1,9 +1,17 @@
 <%- include('../partials/dashboard-head') %>
 
 <div class="admin-panel">
-  <div class="admin-panel-header">
-    <h3 class="admin-panel-title">Riwayat Pesanan</h3>
-    <p class="admin-panel-subtitle">DAFTAR PESANAN SELESAI & DIBATALKAN</p>
+  <div class="admin-panel-header" >
+    <div>
+      <h3 class="admin-panel-title">Riwayat Pesanan</h3>
+      <p class="admin-panel-subtitle">DAFTAR PESANAN SELESAI & DIBATALKAN</p>
+    </div>
+    <div class="stat-mini" style="display: flex; gap: 15px;">
+      <div class="stat-mini-item">
+          <span style="font-size: 12px; opacity: 0.7; display: block; text-transform: uppercase; color: var(--text-primary); font-weight: 600;">Total</span>
+          <span style="font-size: 18px; font-weight: 700; color: var(--navy); font-weight: 700;"><%= orders.length %></span>
+      </div>
+    </div>
   </div>
 
   <div class="admin-table-container">
@@ -23,7 +31,7 @@
         <% if (orders && orders.length > 0) { %>
           <% orders.forEach(order => { %>
             <tr>
-              <td style="font-weight: 700; color: var(--navy);"><%= order.orderId %></td>
+              <td style="font-weight: 700; color: var(--navy-dark);"><%= order.orderId %></td>
               <td>
                 <span class="table-client-name"><%= order.user ? order.user.name : 'Unknown' %></span>
               </td>
@@ -33,12 +41,12 @@
                 </span>
               </td>
               <td>
-                <span class="badge badge-layanan-blue" style="font-size: 10px;">
+                <span class="badge badge-layanan-blue" style="font-size: 11px;">
                     <%= order.items[0]?.serviceType %>
                 </span>
               </td>
               <td>
-                <span style="font-weight: 600;">Rp <%= order.totalPrice.toLocaleString('id-ID') %></span>
+                <span>Rp <%= order.totalPrice.toLocaleString('id-ID') %></span>
               </td>
               <td>
                 <% if (order.status === 'completed') { %>
@@ -48,8 +56,8 @@
                 <% } %>
               </td>
               <td>
-                <a href="/staff/order/<%= order._id %>" class="btn btn-outline btn-sm" style="padding: 4px 12px; font-size: 11px;">
-                    Detail
+                <a href="/staff/order/<%= order._id %>" class="btn btn-primary btn-sm" style="padding: 4px 12px; font-size: 12px;">
+                    Lihat Detail
                 </a>
               </td>
             </tr>

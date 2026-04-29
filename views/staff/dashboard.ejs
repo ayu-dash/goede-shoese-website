@@ -68,7 +68,7 @@
                 <%= diff < 60 ? diff + 'm ago' : (diff < 1440 ? Math.floor(diff/60) + 'h ago' : Math.floor(diff/1440) + 'd ago') %>
               </td>
               <td>
-                <a href="/staff/order/<%= order._id %>" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 11px;">Detail</a>
+                <a href="/staff/order/<%= order._id %>" class="btn btn-primary btn-sm" style="padding: 4px 10px; font-size: 12px;">Lihat Detail</a>
               </td>
             </tr>
           <% }); %>

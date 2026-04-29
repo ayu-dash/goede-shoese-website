@@ -64,7 +64,7 @@
                   deadline.setDate(entryDate.getDate() + 3); // Default 3 hari
                   const isOverdue = new Date() > deadline;
                 %>
-                <span class="table-client-sub" style="font-weight: 600; color: <%= isOverdue ? '#e11d48' : 'var(--text-secondary)' %>">
+                <span class="table-client-sub <%= isOverdue ? 'text-overdue' : '' %>" style="font-weight: 600;">
                   <%= deadline.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) %>
                 </span>
               </td>

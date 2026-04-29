@@ -59,7 +59,7 @@ exports.renderCustomerDashboard = async (req, res) => {
 exports.renderCustomerCreateOrder = async (req, res) => {
   try {
     const services = await Service.find().sort("name");
-    const settings = await Settings.findOne() || { shippingRatePerKm: 5000 };
+    const settings = (await Settings.findOne()) || { shippingRatePerKm: 5000 };
 
     const mainServices = services.filter(
       (s) => s.category !== "Additional Cost",
@@ -98,9 +98,13 @@ exports.renderCustomerOrderDetail = async (req, res) => {
       user: req.user._id,
     }).populate("user");
 
-    const settings = await Settings.findOne() || { shippingRatePerKm: 5000 };
+    const settings = (await Settings.findOne()) || { shippingRatePerKm: 5000 };
 
-    res.render("customer/order-detail", { activePage: "my-orders", order, settings });
+    res.render("customer/order-detail", {
+      activePage: "my-orders",
+      order,
+      settings,
+    });
   } catch (err) {
     res
       .status(500)
@@ -153,9 +157,15 @@ exports.renderCustomerProfile = async (req, res) => {
 exports.renderStaffDashboard = async (req, res) => {
   try {
     const stats = {
-      pendingPayment: await Order.countDocuments({ "payment.status": "pending" }),
+      pendingPayment: await Order.countDocuments({
+        "payment.status": "pending",
+      }),
       pendingPickup: await Order.countDocuments({ status: "pickup" }),
-      inProgress: await Order.countDocuments({ status: { $in: ["received", "validating-in", "in-progress", "quality-check"] } }),
+      inProgress: await Order.countDocuments({
+        status: {
+          $in: ["received", "validating-in", "in-progress", "quality-check"],
+        },
+      }),
       pendingDelivery: await Order.countDocuments({ status: "delivery" }),
     };
 
@@ -170,26 +180,28 @@ exports.renderStaffDashboard = async (req, res) => {
       recentActivities,
     });
   } catch (err) {
-    res.status(500).render("error", { message: "Gagal memuat dashboard staff." });
+    res
+      .status(500)
+      .render("error", { message: "Gagal memuat dashboard staff." });
   }
 };
 
 exports.renderStaffLogistics = async (req, res) => {
   try {
     const filter = req.query.filter || "all";
-    let query = { 
+    let query = {
       $or: [
         { status: "pending", "logistics.pickupMethod": "pickup" },
-        { status: { $in: ["pickup", "quality-check", "delivery"] } }
-      ]
+        { status: { $in: ["pickup", "quality-check", "delivery"] } },
+      ],
     };
-    
+
     if (filter === "pickup") {
-      query = { 
+      query = {
         $or: [
           { status: "pending", "logistics.pickupMethod": "pickup" },
-          { status: "pickup" }
-        ]
+          { status: "pickup" },
+        ],
       };
     }
     if (filter === "delivery") {
@@ -208,11 +220,11 @@ exports.renderStaffLogistics = async (req, res) => {
 
 exports.renderStaffWashing = async (req, res) => {
   try {
-    const orders = await Order.find({ 
+    const orders = await Order.find({
       $or: [
         { status: "pending", "logistics.pickupMethod": "self" },
-        { status: { $in: ["received", "validating-in", "in-progress"] } }
-      ]
+        { status: { $in: ["received", "validating-in", "in-progress"] } },
+      ],
     })
       .sort("-updatedAt")
       .populate("user", "name");
@@ -223,20 +235,22 @@ exports.renderStaffWashing = async (req, res) => {
 };
 exports.renderStaffOperations = async (req, res) => {
   try {
-    const orders = await Order.find({ 
-      status: { $nin: ["completed", "cancelled"] } 
+    const orders = await Order.find({
+      status: { $nin: ["completed", "cancelled"] },
     })
       .sort("-updatedAt")
       .populate("user", "name");
     res.render("staff/operations", { activePage: "operations", orders });
   } catch (err) {
-    res.status(500).render("error", { message: "Gagal memuat operasional staff." });
+    res
+      .status(500)
+      .render("error", { message: "Gagal memuat operasional staff." });
   }
 };
 exports.renderStaffHistory = async (req, res) => {
   try {
-    const orders = await Order.find({ 
-      status: { $in: ["completed", "cancelled"] } 
+    const orders = await Order.find({
+      status: { $in: ["completed", "cancelled"] },
     })
       .sort("-updatedAt")
       .populate("user", "name");
@@ -250,12 +264,20 @@ exports.renderStaffOrderDetail = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate("user");
     if (!order) {
-      return res.status(404).render("error", { message: "Pesanan tidak ditemukan." });
+      return res
+        .status(404)
+        .render("error", { message: "Pesanan tidak ditemukan." });
     }
-    const settings = await Settings.findOne() || { shippingRatePerKm: 5000 };
-    res.render("staff/order-detail", { activePage: "washing", order, settings });
+    const settings = (await Settings.findOne()) || { shippingRatePerKm: 5000 };
+    res.render("staff/order-detail", {
+      activePage: "washing",
+      order,
+      settings,
+    });
   } catch (err) {
-    res.status(500).render("error", { message: "Gagal memuat detail pesanan." });
+    res
+      .status(500)
+      .render("error", { message: "Gagal memuat detail pesanan." });
   }
 };
 
@@ -279,10 +301,14 @@ exports.renderAdminDashboard = async (req, res) => {
       status: { $in: ["pending", "pickup", "in-progress", "delivery"] },
     });
     const totalCustomers = await User.countDocuments({ role: "customer" });
-    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const startOfMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1,
+    );
     const newCustomersThisMonth = await User.countDocuments({
       role: "customer",
-      createdAt: { $gte: startOfMonth }
+      createdAt: { $gte: startOfMonth },
     });
 
     const recentOrders = await Order.find()
@@ -349,11 +375,11 @@ exports.renderAdminDashboard = async (req, res) => {
       { $unwind: "$staff" },
     ]);
 
-    const staffActivities = activitiesResult.map(a => ({
+    const staffActivities = activitiesResult.map((a) => ({
       staffName: a.staff.name,
       action: a.statusHistory.status.toUpperCase(),
-      shoeName: a.items[0]?.shoeName || 'Item',
-      timeAgo: a.statusHistory.updatedAt
+      shoeName: a.items[0]?.shoeName || "Item",
+      timeAgo: a.statusHistory.updatedAt,
     }));
 
     res.render("admin/dashboard", {
@@ -372,7 +398,7 @@ exports.renderAdminDashboard = async (req, res) => {
       maxMonthlyOrder,
       targetYear,
       availableYears,
-      staffActivities
+      staffActivities,
     });
   } catch (err) {
     console.error("Dashboard Error:", err);
@@ -409,8 +435,7 @@ exports.renderAdminServices = async (req, res) => {
     });
   } catch (err) {
     console.error("Services Error:", err);
-    res
-      .render("error", { message: "Gagal memuat halaman layanan." });
+    res.render("error", { message: "Gagal memuat halaman layanan." });
   }
 };
 
@@ -537,6 +562,8 @@ exports.renderAdminTransactions = async (req, res) => {
     });
   } catch (err) {
     console.error("Transactions Error:", err);
-    res.status(500).render("error", { message: "Gagal memuat laporan transaksi." });
+    res
+      .status(500)
+      .render("error", { message: "Gagal memuat laporan transaksi." });
   }
 };

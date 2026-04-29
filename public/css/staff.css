@@ -1,0 +1,198 @@
+/* ===========================
+   STAFF DASHBOARD CSS
+   =========================== */
+
+/* ===========================
+   UTILITY CLASSES
+   =========================== */
+
+/* Overdue text color */
+.text-overdue {
+  color: #e11d48 !important;
+}
+
+/* Payment status badges */
+.badge-payment-paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-payment-unpaid {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ===========================
+   ORDER DETAIL TIMELINE
+   =========================== */
+
+.staff-progress-line-bg {
+  position: absolute;
+  top: 19px;
+  left: 5%;
+  right: 5%;
+  height: 4px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.staff-progress-line-active {
+  position: absolute;
+  top: 19px;
+  left: 5%;
+  height: 4px;
+  background: var(--navy);
+  z-index: 1;
+  transition: width 0.5s ease;
+}
+
+.staff-timeline-step {
+  text-align: center;
+  z-index: 2;
+}
+
+.staff-timeline-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+  transition: all 0.3s ease;
+}
+
+.staff-timeline-dot.completed {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.staff-timeline-dot.active {
+  box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.1);
+}
+
+.staff-timeline-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.staff-timeline-label.completed {
+  color: var(--navy);
+}
+
+.staff-timeline-label.active {
+  font-weight: 800;
+}
+
+/* ===========================
+   TRANSACTIONS PAGE
+   =========================== */
+
+.revenue-summary {
+  background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+  padding: 16px 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(13, 71, 161, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.revenue-summary:hover {
+  transform: translateY(-4px);
+}
+
+.revenue-summary .label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.revenue-summary .value {
+  font-size: 24px;
+  font-weight: 800;
+  font-family: "Space Grotesk", sans-serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.transaction-filter-form .filter-group {
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.transaction-filter-form .input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.transaction-filter-form .input-field label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-ghost {
+  background: #f1f5f9;
+  border: none;
+  color: #64748b;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-icon {
+  background: #f1f5f9;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: #0d47a1;
+  color: white;
+  transform: scale(1.1);
+}

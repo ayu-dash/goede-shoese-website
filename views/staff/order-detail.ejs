@@ -77,36 +77,16 @@
         }
       %>
       
-      <!-- Progress Line Background -->
-      <div style="position: absolute; top: 19px; left: 5%; right: 5%; height: 4px; background: #e2e8f0; z-index: 1;"></div>
+      <div class="staff-progress-line-bg"></div>
       <!-- Active Progress Line -->
-      <div style="position: absolute; top: 19px; left: 5%; width: <%= steps.length > 1 ? (currentIdx / (steps.length - 1)) * 90 : 0 %>%; height: 4px; background: var(--navy); z-index: 1; transition: width 0.5s ease;"></div>
+      <div class="staff-progress-line-active" data-progress="<%= steps.length > 1 ? (currentIdx / (steps.length - 1)) * 90 : 0 %>"></div>
 
       <% steps.forEach(function(step, index) { %>
-        <div style="text-align: center; z-index: 2; width: <%= 100 / steps.length %>%;">
-          <div style="
-            width: 38px; 
-            height: 38px; 
-            border-radius: 50%; 
-            background: <%= index <= currentIdx ? 'var(--navy)' : '#fff' %>; 
-            border: 2px solid <%= index <= currentIdx ? 'var(--navy)' : '#e2e8f0' %>;
-            color: <%= index <= currentIdx ? '#fff' : '#94a3b8' %>;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0 auto 10px auto;
-            transition: all 0.3s ease;
-            box-shadow: <%= index === currentIdx ? '0 0 0 4px rgba(30, 41, 59, 0.1)' : 'none' %>;
-          ">
+        <div class="staff-timeline-step" data-step-width="<%= 100 / steps.length %>">
+          <div class="staff-timeline-dot <%= index <= currentIdx ? 'completed' : '' %> <%= index === currentIdx ? 'active' : '' %>">
             <i class="fa-solid <%= step.icon %>" style="font-size: 16px;"></i>
           </div>
-          <p style="
-            font-size: 11px; 
-            font-weight: <%= index === currentIdx ? '800' : '600' %>; 
-            color: <%= index <= currentIdx ? 'var(--navy)' : '#94a3b8' %>;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          ">
+          <p class="staff-timeline-label <%= index <= currentIdx ? 'completed' : '' %> <%= index === currentIdx ? 'active' : '' %>">
             <%= step.label %>
           </p>
         </div>
@@ -318,7 +298,7 @@
           </span>
           
           <p style="font-size: 12px; color: var(--text-secondary); margin: 15px 0 5px 0;">STATUS PEMBAYARAN</p>
-          <span class="badge" style="font-size: 14px; background: <%= order.payment.status === 'paid' ? '#dcfce7' : '#fee2e2' %>; color: <%= order.payment.status === 'paid' ? '#166534' : '#991b1b' %>;">
+          <span class="badge <%= order.payment.status === 'paid' ? 'badge-payment-paid' : 'badge-payment-unpaid' %>" style="font-size: 14px;">
             <%= order.payment.status.toUpperCase() %>
           </span>
         </div>
@@ -396,6 +376,20 @@ let pendingStatusUpdate = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Order Detail Script Initialized');
+
+    // Set progress line width from data attribute
+    const progressLine = document.querySelector('.staff-progress-line-active');
+    if (progressLine && progressLine.dataset.progress) {
+      progressLine.style.width = progressLine.dataset.progress + '%';
+    }
+
+    // Set timeline step widths from data attribute
+    document.querySelectorAll('.staff-timeline-step').forEach(el => {
+      if (el.dataset.stepWidth) {
+        el.style.width = el.dataset.stepWidth + '%';
+      }
+    });
+
 
     // Action Buttons Event Listeners
     document.querySelectorAll('.next-action-btn').forEach(btn => {

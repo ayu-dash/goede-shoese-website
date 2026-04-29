@@ -152,7 +152,7 @@
               >
             </div>
             <div>
-              <span style="font-size: 11px; color: #cbd5e1"
+              <span style="font-size: 11px; color: var(--text-secondary)"
                 ><%= customer.phone %></span
               >
             </div>
@@ -170,7 +170,7 @@
               <span class="toggle-label"><%= customer.isActive ? 'Aktif' : 'Non-Aktif' %></span>
             </label>
           </td>
-          <td style="color: var(--text-secondary)">
+          <td style="color: var(--text-secondary); font-size: 11px;">
              <%= new Date(customer.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) %>
           </td>
           <td>

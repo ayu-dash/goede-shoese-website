@@ -93,15 +93,6 @@
   margin-top: 4px;
 }
 
-.chart-controls select {
-  padding: 6px 12px;
-  background: #f1f3f5;
-  border: none;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
 /* Dummy Bar Chart */
 .bar-chart-mock {
   display: flex;
@@ -176,9 +167,14 @@
 
 .admin-panel-title {
   font-family: var(--font-heading);
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--navy-dark);
+}
+
+.admin-panel-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
 .admin-link {
@@ -192,6 +188,7 @@
 .admin-table {
   width: 100%;
   border-collapse: collapse;
+  font-family: var(--font-body);
 }
 
 .admin-table th {
@@ -217,7 +214,8 @@
 .admin-table td {
   padding: 16px;
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--navy-dark);
+  font-weight: 700;
   border-bottom: 1px solid #f1f3f5;
   vertical-align: middle;
 }
@@ -243,15 +241,15 @@
 }
 
 .table-client-sub {
-  font-size: 11px;
   color: var(--text-secondary);
+  font-size: 11px;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 100px;
@@ -259,7 +257,6 @@
 }
 
 .badge::before {
-  content: "";
   display: inline-block;
   width: 6px;
   height: 6px;
@@ -348,10 +345,12 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: conic-gradient(#0d47a1 0% 45%,
-      #94a3b8 45% 70%,
-      #475569 70% 90%,
-      #cbd5e1 90% 100%);
+  background: conic-gradient(
+    #0d47a1 0% 45%,
+    #94a3b8 45% 70%,
+    #475569 70% 90%,
+    #cbd5e1 90% 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -477,6 +476,7 @@
   background: var(--white);
   padding: 12px;
   border-radius: 8px;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
   color: var(--text-secondary);
@@ -486,7 +486,7 @@
 }
 
 .btn-manage-staff:hover {
-  background: #f8f9fa;
+  background: var(--gray-light);
   color: var(--navy-dark);
 }
 
@@ -629,8 +629,23 @@
   font-size: 12px;
 }
 
+.btn-primary i {
+  margin-right: 8px;
+}
+
 .btn-ghost-cancel {
   font-size: 12px;
+}
+
+.btn-ghost-reset {
+  background: #f1f3f5;
+  color: var(--navy-dark);
+  font-size: 12px;
+}
+
+.btn-ghost-reset:hover {
+  color: var(--white);
+  background: var(--gray-dark);
 }
 
 /* Pagination */
@@ -700,11 +715,11 @@
   transition: 0.4s;
 }
 
-.toggle-switch input:checked+.toggle-slider {
+.toggle-switch input:checked + .toggle-slider {
   background-color: #16a34a;
 }
 
-.toggle-switch input:checked+.toggle-slider:before {
+.toggle-switch input:checked + .toggle-slider:before {
   transform: translateX(20px);
 }
 
@@ -1148,6 +1163,26 @@
   display: flex;
   justify-content: flex-end;
   gap: 16px;
+}
+
+/* Midtrans Status Variants */
+.ops-midtrans-status {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ops-midtrans-sandbox {
+  --status-color: #0284c7;
+  background: #f0f9ff;
+}
+
+.ops-midtrans-production {
+  --status-color: #e11d48;
+  background: #fff1f2;
 }
 
 /* Responsive Admin */

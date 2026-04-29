@@ -122,15 +122,19 @@
           </span>
         </div>
         <div id="outlet-map"
+          data-lat="<%= (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lat) ? settings.storeInfo.coordinates.lat : -6.200000 %>"
+          data-lng="<%= (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lng) ? settings.storeInfo.coordinates.lng : 106.816666 %>"
+          data-store-name="<%= settings.storeInfo.name %>"
           style="height: 180px; width: 100%; border-radius: 12px; border: 1px solid var(--gray-light); z-index: 1;">
         </div>
       </div>
 
       <script>
         document.addEventListener('DOMContentLoaded', function () {
-          var lat = <%= (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lat) ? settings.storeInfo.coordinates.lat : -6.200000 %>;
-          var lng = <%= (settings.storeInfo.coordinates && settings.storeInfo.coordinates.lng) ? settings.storeInfo.coordinates.lng : 106.816666 %>;
-          var storeName = "<%= settings.storeInfo.name %>";
+          var mapEl = document.getElementById('outlet-map');
+          var lat = parseFloat(mapEl.dataset.lat);
+          var lng = parseFloat(mapEl.dataset.lng);
+          var storeName = mapEl.dataset.storeName;
 
           var map = L.map('outlet-map', {
             zoomControl: false,

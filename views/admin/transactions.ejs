@@ -26,7 +26,7 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fa-solid fa-filter"></i> Filter Laporan
                 </button>
-                <a href="/admin/transactions" class="btn btn-ghost">Reset</a>
+                <a href="/admin/transactions" class="btn btn-ghost-reset">Reset</a>
             </div>
         </div>
     </form>
@@ -51,11 +51,11 @@
                 <% if (orders && orders.length > 0) { %>
                     <% orders.forEach(order => { %>
                         <tr>
-                            <td style="color: var(--text-secondary); font-weight: 700; font-family: 'Space Grotesk', sans-serif;">
+                            <td style="font-weight: 700;">
                                 <%= order.orderId %>
                             </td>
                             <td>
-                                <span style="font-size: 13px; font-weight: 500; color: #475569;">
+                                <span style="font-size: 13px; font-weight: 500;">
                                     <%= new Date(order.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) %>
                                 </span>
                                 <span style="display: block; font-size: 11px; color: #94a3b8;">
@@ -84,7 +84,7 @@
                                 <% } %>
                             </td>
                             <td>
-                                <span style="font-weight: 700; color: #0f172a;">
+                                <span style="font-weight: 700; color: var(--navy-dark)">
                                     Rp <%= order.totalPrice.toLocaleString("id-ID") %>
                                 </span>
                             </td>
@@ -122,197 +122,5 @@
         </table>
     </div>
 </div>
-
-<style>
-:root {
-    --primary-gradient: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
-    --surface-glass: rgba(255, 255, 255, 0.9);
-}
-
-.revenue-summary {
-    background: var(--primary-gradient);
-    padding: 16px 28px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(13, 71, 161, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    color: white;
-    transition: transform 0.3s ease;
-}
-
-.revenue-summary:hover {
-    transform: translateY(-4px);
-}
-
-.revenue-summary .label {
-    font-size: 11px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.8);
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-}
-
-.revenue-summary .value {
-    font-size: 24px;
-    font-weight: 800;
-    font-family: 'Space Grotesk', sans-serif;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.transaction-filter-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.transaction-filter-form .filter-group {
-    display: flex;
-    gap: 24px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-
-.transaction-filter-form .input-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-    min-width: 200px;
-}
-
-.transaction-filter-form .input-field label {
-    font-size: 12px;
-    font-weight: 800;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.modal-input {
-    border: 2px solid #f1f5f9;
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-family: inherit;
-    font-weight: 600;
-    transition: all 0.2s;
-    background: #f8fafc;
-}
-
-.modal-input:focus {
-    border-color: #0d47a1;
-    background: white;
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(13, 71, 161, 0.1);
-}
-
-.filter-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.btn-primary {
-    background: var(--primary-gradient);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 12px;
-    color: white;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(13, 71, 161, 0.2);
-    transition: all 0.3s;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(13, 71, 161, 0.3);
-}
-
-.btn-ghost {
-    background: #f1f5f9;
-    border: none;
-    color: #64748b;
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-
-.btn-ghost:hover {
-    background: #e2e8f0;
-    color: #0f172a;
-}
-
-.admin-table {
-    border-collapse: separate;
-    border-spacing: 0 8px;
-    margin-top: -8px;
-}
-
-.admin-table tr td {
-    background: white;
-    padding: 16px;
-}
-
-.admin-table tr td:first-child {
-    border-radius: 12px 0 0 12px;
-}
-
-.admin-table tr td:last-child {
-    border-radius: 0 12px 12px 0;
-}
-
-.admin-table tr:hover td {
-    background: #f8fafc;
-}
-
-.badge {
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.02em;
-}
-
-.badge-completed {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-pending {
-    background: #fef9c3;
-    color: #854d0e;
-}
-
-.badge-processing {
-    background: #e0f2fe;
-    color: #075985;
-}
-
-.btn-icon {
-    background: #f1f5f9;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    color: #64748b;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon:hover {
-    background: #0d47a1;
-    color: white;
-    transform: scale(1.1);
-}
-</style>
 
 <%- include('../partials/dashboard-foot') %>

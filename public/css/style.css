@@ -146,7 +146,7 @@ ul {
 }
 
 .btn-white:hover {
-  background: var(--off-white);
+  background: var(--gray-mid);
 }
 
 /* ===========================
@@ -176,17 +176,18 @@ ul {
 }
 
 .logo {
-  font-family: var(--font-heading);
-  font-size: 30px;
-  font-weight: 800;
-  font-style: bold;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 40px;
+  font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -2px;
+  letter-spacing: 0.5px;
   text-decoration: none;
 }
 
 .logo-highlight {
+  letter-spacing: -2px;
   color: var(--blue-accent);
+  margin-right: 2px;
 }
 
 .nav-links {
@@ -585,7 +586,7 @@ ul {
 }
 
 .item-name {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 13px;
   font-style: bold;
   display: block;

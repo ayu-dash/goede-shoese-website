@@ -6,10 +6,49 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   // PRICE CONFIGURATION
   // =========================
-  const SERVICE_PRICES = window.DYNAMIC_PRICES ? window.DYNAMIC_PRICES.SERVICES : {};
-  const ADDON_PRICES = window.DYNAMIC_PRICES ? window.DYNAMIC_PRICES.ADDONS : {};
+  const SERVICE_PRICES = window.DYNAMIC_PRICES
+    ? window.DYNAMIC_PRICES.SERVICES
+    : {};
+  const ADDON_PRICES = window.DYNAMIC_PRICES
+    ? window.DYNAMIC_PRICES.ADDONS
+    : {};
 
+  // =========================
+  // CUSTOM YEAR DROPDOWN LOGIC
+  // =========================
+  const yearWrapper = document.getElementById("customYearSelect");
+  if (yearWrapper) {
+    const yearTrigger = yearWrapper.querySelector(".custom-select-trigger");
+    const yearOptions = yearWrapper.querySelectorAll(".custom-option");
 
+    // Buka tutup dropdown
+    yearTrigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      yearWrapper.classList.toggle("open");
+    });
+
+    // Saat tahun dipilih
+    yearOptions.forEach((option) => {
+      option.addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        const selectedYear = this.getAttribute("data-value");
+
+        // Tutup dropdown
+        yearWrapper.classList.remove("open");
+
+        // Langsung redirect halaman persis seperti fungsi onchange bawaan
+        window.location.href = "?year=" + selectedYear;
+      });
+    });
+
+    // Tutup jika klik di luar area
+    document.addEventListener("click", function (e) {
+      if (!yearWrapper.contains(e.target)) {
+        yearWrapper.classList.remove("open");
+      }
+    });
+  }
 
   // =========================
   // UPDATE SUMMARY LOGIC
@@ -38,13 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".order-section .shoe-item").forEach((item) => {
       const rawShoeName = item.querySelector(".shoe-name").value.trim();
       const serviceType = item.querySelector(".service-type").value;
-      const shoeLabel = item.querySelector(".shoe-item-label") ? item.querySelector(".shoe-item-label").innerText : "Item";
+      const shoeLabel = item.querySelector(".shoe-item-label")
+        ? item.querySelector(".shoe-item-label").innerText
+        : "Item";
 
       const addons = [];
       item.querySelectorAll(".addon-tag input:checked").forEach((cb) => {
         addons.push(cb.value);
       });
-
 
       if (!rawShoeName && !serviceType && addons.length === 0) {
         return;
@@ -72,64 +112,90 @@ document.addEventListener("DOMContentLoaded", () => {
       subtotal += itemPrice;
 
       const basePrice = SERVICE_PRICES[serviceType] || 0;
-      const addonsDetail = addons.map(a => ({ name: a, price: ADDON_PRICES[a] || 0 }));
+      const addonsDetail = addons.map((a) => ({
+        name: a,
+        price: ADDON_PRICES[a] || 0,
+      }));
 
-      items.push({ shoeName, serviceType: serviceType || "Belum dipilih", basePrice, addonsDetail, itemPrice });
+      items.push({
+        shoeName,
+        serviceType: serviceType || "Belum dipilih",
+        basePrice,
+        addonsDetail,
+        itemPrice,
+      });
     });
 
     if (items.length === 0) {
       summaryContainer.innerHTML = `<div class="order-summary-item placeholder-item"><p class="text-muted">Tambahkan sepatu untuk melihat ringkasan</p></div>`;
     } else {
-      summaryContainer.innerHTML = items.map(item => `
+      summaryContainer.innerHTML = items
+        .map(
+          (item) => `
         <div class="order-summary-item-wrapper">
           <div class="order-summary-item">
             <div>
               <span class="summary-item-name">${item.shoeName.length > 20 ? item.shoeName.substring(0, 17) + "..." : item.shoeName}</span>
               <span class="summary-item-service">${item.serviceType.toUpperCase()}</span>
             </div>
-            <span class="summary-item-price">Rp ${item.basePrice.toLocaleString('id-ID')}</span>
+            <span class="summary-item-price">Rp ${item.basePrice.toLocaleString("id-ID")}</span>
           </div>
-          ${item.addonsDetail.map(a => `
+          ${item.addonsDetail
+            .map(
+              (a) => `
             <div class="order-summary-addon">
               <span class="summary-addon-name">+ ${a.name}</span>
-              <span class="summary-addon-price">Rp ${a.price.toLocaleString('id-ID')}</span>
+              <span class="summary-addon-price">Rp ${a.price.toLocaleString("id-ID")}</span>
             </div>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
-      `).join("");
+      `,
+        )
+        .join("");
     }
 
+    const PICKUP_FEE = window.DYNAMIC_PRICES
+      ? window.DYNAMIC_PRICES.PICKUP_FEE
+      : 15000;
+    const DELIVERY_FEE = window.DYNAMIC_PRICES
+      ? window.DYNAMIC_PRICES.DELIVERY_FEE
+      : 15000;
 
-    const PICKUP_FEE = window.DYNAMIC_PRICES ? window.DYNAMIC_PRICES.PICKUP_FEE : 15000;
-    const DELIVERY_FEE = window.DYNAMIC_PRICES ? window.DYNAMIC_PRICES.DELIVERY_FEE : 15000;
-
-    const pickupMethod = document.querySelector("[data-group='pickup'].active")?.dataset.value;
-    const deliveryMethod = document.querySelector("[data-group='delivery'].active")?.dataset.value;
+    const pickupMethod = document.querySelector("[data-group='pickup'].active")
+      ?.dataset.value;
+    const deliveryMethod = document.querySelector(
+      "[data-group='delivery'].active",
+    )?.dataset.value;
 
     let logisticsFee = 0;
     if (pickupMethod === "pickup") logisticsFee += PICKUP_FEE;
     if (deliveryMethod === "delivery") logisticsFee += DELIVERY_FEE;
 
-    subtotalEl.innerText = `Rp ${subtotal.toLocaleString('id-ID')}`;
-    logisticsEl.innerText = `Rp ${logisticsFee.toLocaleString('id-ID')}`;
-    totalEl.innerText = `Rp ${(subtotal + logisticsFee).toLocaleString('id-ID')}`;
+    subtotalEl.innerText = `Rp ${subtotal.toLocaleString("id-ID")}`;
+    logisticsEl.innerText = `Rp ${logisticsFee.toLocaleString("id-ID")}`;
+    totalEl.innerText = `Rp ${(subtotal + logisticsFee).toLocaleString("id-ID")}`;
 
     const estimateBadge = document.querySelector(".estimate-badge");
     if (estimateBadge) {
       if (maxDaysMax === 0) {
         estimateBadge.innerText = "0 Hari";
       } else {
-        estimateBadge.innerText = (maxDaysMin === maxDaysMax)
-          ? `${maxDaysMax} Hari`
-          : `${maxDaysMin}-${maxDaysMax} Hari`;
+        estimateBadge.innerText =
+          maxDaysMin === maxDaysMax
+            ? `${maxDaysMax} Hari`
+            : `${maxDaysMin}-${maxDaysMax} Hari`;
       }
     }
   };
 
   document.addEventListener("change", (e) => {
-    if (e.target.classList.contains("shoe-name") ||
+    if (
+      e.target.classList.contains("shoe-name") ||
       e.target.classList.contains("service-type") ||
-      e.target.type === "checkbox") {
+      e.target.type === "checkbox"
+    ) {
       updateOrderSummary();
     }
   });
@@ -141,7 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const originalToggleLogic = (btn) => {
     const group = btn.closest(".logistics-toggle");
-    group.querySelectorAll(".toggle-btn").forEach((b) => b.classList.remove("active"));
+    group
+      .querySelectorAll(".toggle-btn")
+      .forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     updateOrderSummary();
   };
@@ -156,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (checkbox) {
       checkbox.checked = !checkbox.checked;
       // Trigger native-like change event to fire updateOrderSummary
-      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
       tag.classList.toggle("active", checkbox.checked);
     }
   });
@@ -167,11 +235,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".logistics-toggle .toggle-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const group = btn.closest(".logistics-toggle");
-      group.querySelectorAll(".toggle-btn").forEach((b) => b.classList.remove("active"));
+      group
+        .querySelectorAll(".toggle-btn")
+        .forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
 
       const groupName = btn.dataset.group; // pickup or delivery
-      const value = btn.dataset.value;     // self or pickup/delivery
+      const value = btn.dataset.value; // self or pickup/delivery
 
       if (groupName === "pickup") {
         const detail = document.getElementById("pickup-detail");
@@ -204,7 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   document.querySelectorAll(".payment-card").forEach((card) => {
     card.addEventListener("click", () => {
-      document.querySelectorAll(".payment-card").forEach((c) => c.classList.remove("active"));
+      document
+        .querySelectorAll(".payment-card")
+        .forEach((c) => c.classList.remove("active"));
       card.classList.add("active");
     });
   });
@@ -218,7 +290,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (pickupSelector) {
     pickupSelector.addEventListener("change", (e) => {
-      const manualContainer = document.getElementById("pickup-address-manual-container");
+      const manualContainer = document.getElementById(
+        "pickup-address-manual-container",
+      );
       if (e.target.value === "manual") {
         manualContainer.classList.remove("d-none");
       } else {
@@ -228,14 +302,16 @@ document.addEventListener("DOMContentLoaded", () => {
       // If sync is enabled, mirror to delivery
       if (syncCheckbox && syncCheckbox.checked) {
         deliverySelector.value = e.target.value;
-        deliverySelector.dispatchEvent(new Event('change'));
+        deliverySelector.dispatchEvent(new Event("change"));
       }
     });
   }
 
   if (deliverySelector) {
     deliverySelector.addEventListener("change", (e) => {
-      const manualContainer = document.getElementById("delivery-address-manual-container");
+      const manualContainer = document.getElementById(
+        "delivery-address-manual-container",
+      );
       if (e.target.value === "manual") {
         manualContainer.classList.remove("d-none");
       } else {
@@ -243,7 +319,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // If manually changing delivery, uncheck sync if it was checked but value differs
-      if (syncCheckbox && syncCheckbox.checked && e.target.value !== pickupSelector.value) {
+      if (
+        syncCheckbox &&
+        syncCheckbox.checked &&
+        e.target.value !== pickupSelector.value
+      ) {
         syncCheckbox.checked = false;
       }
     });
@@ -262,7 +342,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   const orderTabs = document.querySelectorAll(".order-tab");
   const activeOrdersSection = document.getElementById("active-orders-section");
-  const historyOrdersSection = document.getElementById("history-orders-section");
+  const historyOrdersSection = document.getElementById(
+    "history-orders-section",
+  );
 
   if (orderTabs.length > 0) {
     orderTabs.forEach((tab) => {
@@ -272,20 +354,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const filter = tab.dataset.filter;
 
-        document.querySelectorAll(".active-order-card, .history-card").forEach((card) => {
-          if (filter === "all" || card.dataset.orderStatus === filter) {
-            card.style.display = "";
-          } else {
-            card.style.display = "none";
-          }
-        });
+        document
+          .querySelectorAll(".active-order-card, .history-card")
+          .forEach((card) => {
+            if (filter === "all" || card.dataset.orderStatus === filter) {
+              card.style.display = "";
+            } else {
+              card.style.display = "none";
+            }
+          });
 
         if (activeOrdersSection) {
-          activeOrdersSection.style.display = (filter === "all" || filter === "proses") ? "" : "none";
+          activeOrdersSection.style.display =
+            filter === "all" || filter === "proses" ? "" : "none";
         }
 
         if (historyOrdersSection) {
-          historyOrdersSection.style.display = (filter === "all" || filter === "selesai" || filter === "batal") ? "" : "none";
+          historyOrdersSection.style.display =
+            filter === "all" || filter === "selesai" || filter === "batal"
+              ? ""
+              : "none";
         }
       });
     });
@@ -404,13 +492,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const pickupMethod = document.querySelector("[data-group='pickup'].active").dataset.value;
-      const deliveryMethod = document.querySelector("[data-group='delivery'].active").dataset.value;
+      const pickupMethod = document.querySelector(
+        "[data-group='pickup'].active",
+      ).dataset.value;
+      const deliveryMethod = document.querySelector(
+        "[data-group='delivery'].active",
+      ).dataset.value;
 
       const pickupSelector = document.getElementById("pickup-address-selector");
-      const deliverySelector = document.getElementById("delivery-address-selector");
-      const pickupManualInput = document.getElementById("pickup-address-manual");
-      const deliveryManualInput = document.getElementById("delivery-address-manual");
+      const deliverySelector = document.getElementById(
+        "delivery-address-selector",
+      );
+      const pickupManualInput = document.getElementById(
+        "pickup-address-manual",
+      );
+      const deliveryManualInput = document.getElementById(
+        "delivery-address-manual",
+      );
 
       let pickupAddress = "";
       let pickupPhone = "";
@@ -420,8 +518,9 @@ document.addEventListener("DOMContentLoaded", () => {
           pickupPhone = ""; // Manual address might not have phone input yet, fallback to user phone in controller if needed
         } else {
           pickupAddress = pickupSelector.value;
-          const selectedOption = pickupSelector.options[pickupSelector.selectedIndex];
-          pickupPhone = selectedOption.getAttribute('data-phone') || "";
+          const selectedOption =
+            pickupSelector.options[pickupSelector.selectedIndex];
+          pickupPhone = selectedOption.getAttribute("data-phone") || "";
         }
       }
 
@@ -433,22 +532,31 @@ document.addEventListener("DOMContentLoaded", () => {
           deliveryPhone = "";
         } else {
           deliveryAddress = deliverySelector.value;
-          const selectedOption = deliverySelector.options[deliverySelector.selectedIndex];
-          deliveryPhone = selectedOption.getAttribute('data-phone') || "";
+          const selectedOption =
+            deliverySelector.options[deliverySelector.selectedIndex];
+          deliveryPhone = selectedOption.getAttribute("data-phone") || "";
         }
       }
 
-      if (pickupMethod === "pickup" && (!pickupAddress || pickupAddress === "")) {
+      if (
+        pickupMethod === "pickup" &&
+        (!pickupAddress || pickupAddress === "")
+      ) {
         alert("Mohon masukkan atau pilih alamat penjemputan.");
         return;
       }
 
-      if (deliveryMethod === "delivery" && (!deliveryAddress || deliveryAddress === "")) {
+      if (
+        deliveryMethod === "delivery" &&
+        (!deliveryAddress || deliveryAddress === "")
+      ) {
         alert("Mohon masukkan atau pilih alamat pengantaran.");
         return;
       }
 
-      const paymentMethod = document.querySelector("input[name='payment']:checked").value;
+      const paymentMethod = document.querySelector(
+        "input[name='payment']:checked",
+      ).value;
 
       const orderData = {
         items: shoeItems,
