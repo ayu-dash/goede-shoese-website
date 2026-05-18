@@ -50,7 +50,26 @@
         <% if (recentOrders && recentOrders.length> 0) { %>
           <% recentOrders.forEach(order=> { %>
             <a href="/customer/order-detail?id=<%= order._id %>" class="dash-activity-item">
-              <img src="/images/hero-shoe.png" alt="Sepatu" class="dash-activity-img" />
+              <% 
+                let shoePhoto = '/images/hero-shoe.png';
+                if (order.items && order.items.length > 0) {
+                  const item = order.items[0];
+                  if (item.photosAfter && item.photosAfter.length > 0) {
+                    shoePhoto = item.photosAfter[0];
+                  } else if (item.photosBefore && item.photosBefore.length > 0) {
+                    shoePhoto = item.photosBefore[0];
+                  } else {
+                    const qcPhoto = (order.statusHistory.find(h => h.status === 'quality-check') || {}).photos;
+                    const valPhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos;
+                    if (qcPhoto && qcPhoto.length > 0) {
+                      shoePhoto = qcPhoto[0];
+                    } else if (valPhoto && valPhoto.length > 0) {
+                      shoePhoto = valPhoto[0];
+                    }
+                  }
+                }
+              %>
+              <img src="<%= shoePhoto %>" alt="Sepatu" class="dash-activity-img" />
               <div class="dash-activity-info">
                 <span class="dash-activity-name">
                   <%= order.items[0].shoeName %>

@@ -29,8 +29,26 @@
     <% activeOrders.forEach(function(order) { %>
       <div class="active-order-card" data-order-status="proses">
         <div class="active-order-img">
-          <% const activeShoePhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos; %>
-          <img src="<%= (activeShoePhoto && activeShoePhoto.length > 0) ? activeShoePhoto[0] : '/images/hero-shoe.png' %>" alt="Sepatu" />
+          <% 
+            let shoePhoto = '/images/hero-shoe.png';
+            if (order.items && order.items.length > 0) {
+              const item = order.items[0];
+              if (item.photosAfter && item.photosAfter.length > 0) {
+                shoePhoto = item.photosAfter[0];
+              } else if (item.photosBefore && item.photosBefore.length > 0) {
+                shoePhoto = item.photosBefore[0];
+              } else {
+                const qcPhoto = (order.statusHistory.find(h => h.status === 'quality-check') || {}).photos;
+                const valPhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos;
+                if (qcPhoto && qcPhoto.length > 0) {
+                  shoePhoto = qcPhoto[0];
+                } else if (valPhoto && valPhoto.length > 0) {
+                  shoePhoto = valPhoto[0];
+                }
+              }
+            }
+          %>
+          <img src="<%= shoePhoto %>" alt="Sepatu" />
         </div>
         <div class="active-order-content">
           <div class="active-order-top">
@@ -116,8 +134,26 @@
       <% historyOrders.forEach(function(order) { %>
         <div class="history-card" data-order-status="<%= order.status === 'completed' ? 'selesai' : 'batal' %>">
           <div class="history-card-top">
-            <% const histShoePhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos; %>
-            <img src="<%= (histShoePhoto && histShoePhoto.length > 0) ? histShoePhoto[0] : '/images/hero-shoe.png' %>" alt="Sepatu" class="history-card-img" />
+            <% 
+              let shoePhoto = '/images/hero-shoe.png';
+              if (order.items && order.items.length > 0) {
+                const item = order.items[0];
+                if (item.photosAfter && item.photosAfter.length > 0) {
+                  shoePhoto = item.photosAfter[0];
+                } else if (item.photosBefore && item.photosBefore.length > 0) {
+                  shoePhoto = item.photosBefore[0];
+                } else {
+                  const qcPhoto = (order.statusHistory.find(h => h.status === 'quality-check') || {}).photos;
+                  const valPhoto = (order.statusHistory.find(h => h.status === 'validating-in') || {}).photos;
+                  if (qcPhoto && qcPhoto.length > 0) {
+                    shoePhoto = qcPhoto[0];
+                  } else if (valPhoto && valPhoto.length > 0) {
+                    shoePhoto = valPhoto[0];
+                  }
+                }
+              }
+            %>
+            <img src="<%= shoePhoto %>" alt="Sepatu" class="history-card-img" />
             <div class="history-card-info">
               <span class="history-card-id">#<%= order.orderId %></span>
               <span class="history-status-badge <%= order.status === 'cancelled' ? 'history-status-badge--cancelled' : '' %>">
