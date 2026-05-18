@@ -209,18 +209,11 @@ exports.getMyOrders = async (req, res) => {
 
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+const { put } = require("@vercel/blob");
 
-// Configure multer storage
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "public/uploads/orders");
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
-        cb(null, `order-${req.params.id}-${uniqueSuffix}${ext}`);
-    },
-});
+// Use memoryStorage to hold file buffers in RAM (needed for both local disk writing and Vercel Blob)
+const storage = multer.memoryStorage();
 
 exports.upload = multer({ storage });
 
@@ -252,10 +245,45 @@ exports.updateOrderStatus = async (req, res) => {
             photos: [],
         };
 
+        // Gather all uploaded files
+        const filesToProcess = [];
         if (req.files && req.files.length > 0) {
-            historyEntry.photos = req.files.map(file => `/uploads/orders/${file.filename}`);
+            filesToProcess.push(...req.files);
         } else if (req.file) {
-            historyEntry.photos = [`/uploads/orders/${req.file.filename}`];
+            filesToProcess.push(req.file);
+        }
+
+        if (filesToProcess.length > 0) {
+            const photoUploadPromises = filesToProcess.map(async (file) => {
+                // Scenario A: If Vercel Blob Token is configured, upload to Vercel Storage
+                if (process.env.BLOB_READ_WRITE_TOKEN) {
+                    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+                    const ext = path.extname(file.originalname);
+                    const blobName = `orders/order-${order._id}-${uniqueSuffix}${ext}`;
+                    
+                    const blob = await put(blobName, file.buffer, {
+                        access: "public",
+                        token: process.env.BLOB_READ_WRITE_TOKEN
+                    });
+                    return blob.url; // Returns a secure public cloud URL
+                } else {
+                    // Scenario B: Fallback to Local Disk (for zero-config localhost testing)
+                    const dir = path.join(__dirname, "../public/uploads/orders");
+                    if (!fs.existsSync(dir)){
+                        fs.mkdirSync(dir, { recursive: true });
+                    }
+                    
+                    const ext = path.extname(file.originalname);
+                    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+                    const filename = `order-${order._id}-${uniqueSuffix}${ext}`;
+                    const filePath = path.join(dir, filename);
+                    
+                    await fs.promises.writeFile(filePath, file.buffer);
+                    return `/uploads/orders/${filename}`; // Returns local path relative to public
+                }
+            });
+
+            historyEntry.photos = await Promise.all(photoUploadPromises);
         }
 
         order.status = status;
