@@ -44,14 +44,21 @@
                 </span>
               </div>
 
-              <% var steps=[ 
+              <% 
+                var pickupLabel = order.logistics && order.logistics.pickupMethod === 'self' ? 'Drop-off' : 'Penjemputan';
+                var pickupIcon = order.logistics && order.logistics.pickupMethod === 'self' ? 'fa-store' : 'fa-truck-pickup';
+                
+                var deliveryLabel = order.logistics && order.logistics.deliveryMethod === 'self' ? 'Ambil Sendiri' : 'Pengantaran';
+                var deliveryIcon = order.logistics && order.logistics.deliveryMethod === 'self' ? 'fa-hand-holding' : 'fa-truck';
+
+                var steps=[ 
                   { key: 'pending' , label: 'Submit' , icon: 'fa-file-invoice' }, 
                   { key: 'payment' , label: 'Pembayaran' , icon: 'fa-credit-card' }, 
-                  { key: 'pickup' , label: 'Penjemputan' , icon: 'fa-truck-pickup' }, 
+                  { key: 'pickup' , label: pickupLabel , icon: pickupIcon }, 
                   { key: 'validating-in' , label: 'Cek Kondisi' , icon: 'fa-clipboard-check' }, 
                   { key: 'in-progress' , label: 'Pencucian' , icon: 'fa-soap' }, 
                   { key: 'quality-check' , label: 'Cek Hasil' , icon: 'fa-magnifying-glass' }, 
-                  { key: 'delivery' , label: 'Pengantaran' , icon: 'fa-truck' }, 
+                  { key: 'delivery' , label: deliveryLabel , icon: deliveryIcon }, 
                   { key: 'completed' , label: 'Selesai' , icon: 'fa-check-circle' } 
                 ]; 
                 var effectiveStatus=order.status; 
