@@ -50,7 +50,7 @@
             <div class="active-order-status-wrap">
               <span class="active-order-status-label">STATUS</span>
               <span class="active-order-status">
-                <i class="fa-solid fa-circle"></i> <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                <i class="fa-solid fa-circle"></i> <%= order.statusLabel %>
               </span>
             </div>
           </div>
@@ -107,7 +107,7 @@
             <div class="history-card-info">
               <span class="history-card-id">#<%= order.orderId %></span>
               <span class="history-status-badge" <%= order.status === 'cancelled' ? 'style="background: #ef4444; color: #ffffff; border: none;"' : '' %>>
-                <%= order.status.toUpperCase() %>
+                <%= order.statusLabel.toUpperCase() %>
               </span>
               <h4 class="history-card-name"><%= order.items[0].shoeName %></h4>
               <span class="history-card-service">

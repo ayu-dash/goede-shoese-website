@@ -13,7 +13,7 @@
     <% var statusClass="process" ; if(order.status==='completed' ) statusClass="done" ; if(order.status==='cancelled' )
       statusClass="cancel" ; %>
       <span class="status-badge status-badge--<%= statusClass %>">
-        <%= (order.status || 'PENDING' ).toUpperCase() %>
+        <%= order.statusLabel.toUpperCase() %>
       </span>
   </div>
 

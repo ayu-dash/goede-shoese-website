@@ -61,7 +61,7 @@
               </td>
               <td>
                 <span class="badge badge-<%= order.status === 'completed' ? 'completed' : (order.status === 'pending' ? 'pending' : 'processing') %>">
-                  <%= order.status.toUpperCase() %>
+                  <%= order.statusLabel.toUpperCase() %>
                 </span>
               </td>
               <td>

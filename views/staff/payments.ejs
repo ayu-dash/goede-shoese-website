@@ -32,7 +32,7 @@
               <td>
                 <span class="badge badge-layanan-gray">
                   <i class="fa-solid <%= order.payment.method === 'cod' ? 'fa-hand-holding-dollar' : 'fa-building-columns' %>"></i>
-                  <%= order.payment.method.toUpperCase() %>
+                  <%= order.paymentMethodLabel %>
                 </span>
               </td>
               <td style="font-weight: 600;">Rp <%= order.totalPrice.toLocaleString('id-ID') %></td>

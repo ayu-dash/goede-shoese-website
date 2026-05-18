@@ -51,7 +51,7 @@
               </td>
               <td>
                 <span class="badge badge-layanan-gray" style="color: var(--navy); border: 1px solid var(--navy); text-transform: uppercase;">
-                  <%= order.payment.method %>
+                  <%= order.paymentMethodLabel %>
                 </span>
               </td>
               <td>
@@ -78,7 +78,7 @@
                 <% } else if (order.status === 'in-progress') { %>
                   <span class="badge badge-processing">Sedang Dicuci</span>
                 <% } else { %>
-                  <span class="badge badge-processing"><%= order.status.toUpperCase() %></span>
+                  <span class="badge badge-processing"><%= order.statusLabel.toUpperCase() %></span>
                 <% } %>
               </td>
               <td>

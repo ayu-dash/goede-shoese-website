@@ -77,8 +77,8 @@
               </td>
               <td>
                 <div style="font-size: 11px; color: var(--text-secondary);">
-                    <i class="fa-solid fa-truck-pickup"></i> <%= order.logistics.pickupMethod.toUpperCase() %><br>
-                    <i class="fa-solid fa-truck-fast"></i> <%= order.logistics.deliveryMethod.toUpperCase() %>
+                    <i class="fa-solid fa-truck-pickup"></i> <%= order.logistics.pickupMethod === 'pickup' ? 'PICKUP' : 'DROP-OFF' %><br>
+                    <i class="fa-solid fa-truck-fast"></i> <%= order.logistics.deliveryMethod === 'delivery' ? 'DELIVERY' : 'AMBIL DI GERAI' %>
                 </div>
               </td>
               <td>
@@ -103,7 +103,7 @@
                 <% } else if (order.status === 'delivery') { %>
                     <span class="badge" style="background: #f0fdf4; color: #166534; border: 1px solid #dcfce7;">Sedang Diantar</span>
                 <% } else { %>
-                    <span class="badge badge-layanan-gray"><%= order.status.toUpperCase() %></span>
+                    <span class="badge badge-layanan-gray"><%= order.statusLabel.toUpperCase() %></span>
                 <% } %>
               </td>
               <td>
