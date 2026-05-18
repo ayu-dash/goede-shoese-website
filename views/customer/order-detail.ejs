@@ -62,6 +62,16 @@
                   { key: 'completed' , label: 'Selesai' , icon: 'fa-check-circle' } 
                 ]; 
                 var effectiveStatus=order.status; 
+                
+                // Map intermediate/internal statuses to customer-friendly steps
+                if (effectiveStatus === 'received') {
+                  effectiveStatus = 'pickup';
+                } else if (effectiveStatus === 'ready-to-pickup') {
+                  effectiveStatus = 'delivery';
+                } else if (effectiveStatus === 'payment-cod') {
+                  effectiveStatus = 'delivery';
+                }
+
                 var currentIdx=-1; 
                 for (var j=0; j < steps.length; j++) { 
                   if (steps[j].key===effectiveStatus) { 
@@ -70,7 +80,7 @@
                   } 
                 } 
                 // Logika loncat step berdasarkan status pembayaran:
-                if (effectiveStatus === 'pending' && order.payment) {
+                if (order.status === 'pending' && order.payment) {
                   if (order.payment.status === 'paid' || order.payment.method === 'cod') {
                     currentIdx = 2; // Langsung ke Penjemputan
                   } else if (order.payment.method === 'bank' && order.payment.status === 'pending') {

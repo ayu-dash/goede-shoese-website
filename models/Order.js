@@ -377,6 +377,8 @@ orderSchema.virtual("statusLabel").get(function () {
         "validating-in": "Cek Kondisi",
         "in-progress": "Pencucian",
         "quality-check": "Cek Hasil",
+        "ready-to-pickup": "Siap Diambil",
+        "payment-cod": "Validasi Bayar",
         completed: "Selesai",
         cancelled: "Dibatalkan",
     };
