@@ -349,6 +349,64 @@ exports.confirmPayment = async (req, res) => {
         });
     }
 };
+
+exports.confirmPaymentClient = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Order not found",
+            });
+        }
+
+        // Check ownership (only the customer who owns the order can confirm it via client-side redirect)
+        if (order.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                status: "fail",
+                message: "You are not authorized to confirm this payment",
+            });
+        }
+
+        order.payment.status = "paid";
+        // If pickup method is pickup, set order status to pickup. If drop-off (self), keep it pending
+        order.status = order.logistics.pickupMethod === "pickup" ? "pickup" : "pending";
+
+        order.statusHistory.push({
+            status: "paid",
+            updatedBy: req.user.id,
+            updatedAt: Date.now(),
+            note: "Payment completed successfully via Midtrans client callback",
+        });
+
+        await order.save();
+
+        // Send double notifications (In-App & Email)
+        const populatedOrder = await order.populate("user");
+        notifyUser({
+            userId: populatedOrder.user.id,
+            email: populatedOrder.user.email,
+            title: "Pembayaran Berhasil via Midtrans",
+            emailSubject: `Goede Shoes - Pembayaran Berhasil untuk Pesanan ${order.orderId}`,
+            message: `Halo ${populatedOrder.user.name},\n\nPembayaran untuk pesanan Anda dengan ID ${order.orderId} via Midtrans telah BERHASIL diterima!\n\nPesanan Anda sekarang masuk ke proses berikutnya.\n\nSalam hangat,\nGoede Shoes Team`,
+            type: "payment",
+            link: "/customer/my-orders"
+        });
+
+        res.status(200).json({
+            status: "success",
+            message: "Payment successfully updated on client callback",
+            data: { order }
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "fail",
+            message: err.message,
+        });
+    }
+};
+
 // 4. Handle Midtrans Notification (Webhook)
 exports.handleNotification = async (req, res) => {
     try {
@@ -374,11 +432,13 @@ exports.handleNotification = async (req, res) => {
                 // e.g: herOrder.paymentStatus = 'challenge';
             } else if (fraudStatus == 'accept') {
                 order.payment.status = 'paid';
-                order.status = 'pickup'; // Langsung lanjut ke penjemputan
+                // If pickupMethod is pickup, transition to 'pickup'. If 'self' (antar sendiri), remain 'pending'
+                order.status = order.logistics.pickupMethod === 'pickup' ? 'pickup' : 'pending';
             }
         } else if (transactionStatus == 'settlement') {
             order.payment.status = 'paid';
-            order.status = 'pickup'; // Langsung lanjut ke penjemputan
+            // If pickupMethod is pickup, transition to 'pickup'. If 'self' (antar sendiri), remain 'pending'
+            order.status = order.logistics.pickupMethod === 'pickup' ? 'pickup' : 'pending';
         } else if (transactionStatus == 'cancel' ||
             transactionStatus == 'deny' ||
             transactionStatus == 'expire') {

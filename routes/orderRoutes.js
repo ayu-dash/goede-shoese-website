@@ -13,6 +13,7 @@ router.use(authMiddleware.protect);
 router.post("/", orderController.createOrder);
 router.get("/my-orders", orderController.getMyOrders);
 router.patch("/:id/cancel", orderController.cancelOrder);
+router.patch("/:id/confirm-payment-client", orderController.confirmPaymentClient);
 
 // Staff & Admin Routes
 router.patch(

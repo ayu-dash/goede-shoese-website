@@ -372,7 +372,15 @@
           const token = this.dataset.snapToken;
           if (token) {
             window.snap.pay(token, {
-              onSuccess: function(result) {
+              onSuccess: async function(result) {
+                try {
+                  await fetch(`/api/orders/<%= order._id %>/confirm-payment-client`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' }
+                  });
+                } catch (err) {
+                  console.error("Error updating local payment status:", err);
+                }
                 showCustomAlert("Pembayaran Berhasil", "Terima kasih! Pembayaran Anda telah kami terima.", "success", () => {
                   window.location.href = "/customer/my-orders";
                 });
