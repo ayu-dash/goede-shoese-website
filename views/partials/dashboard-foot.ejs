@@ -6,29 +6,35 @@
       <!-- Brand Column -->
       <div class="footer-brand">
         <span class="logo footer-logo">GO<span class="logo-highlight">ED</span>E</span>
-        <p><%= settings.aboutText %></p>
+        <p>
+          <%= settings.aboutText %>
+        </p>
 
         <div class="social-links">
           <% if (settings.socialLinks?.instagram?.isActive) { %>
-          <a href="<%= settings.socialLinks.instagram.url %>" class="social-btn" aria-label="Instagram" target="_blank">
-            <i class="fa-brands fa-instagram" style="font-size: 20px;"></i>
-          </a>
-          <% } %>
-          <% if (settings.socialLinks?.youtube?.isActive) { %>
-          <a href="<%= settings.socialLinks.youtube.url %>" class="social-btn" aria-label="YouTube" target="_blank">
-            <i class="fa-brands fa-youtube" style="font-size: 20px;"></i>
-          </a>
-          <% } %>
-          <% if (settings.socialLinks?.tiktok?.isActive) { %>
-          <a href="<%= settings.socialLinks.tiktok.url %>" class="social-btn" aria-label="TikTok" target="_blank">
-            <i class="fa-brands fa-tiktok" style="font-size: 20px;"></i>
-          </a>
-          <% } %>
-          <% if (settings.socialLinks?.facebook?.isActive) { %>
-          <a href="<%= settings.socialLinks.facebook.url %>" class="social-btn" aria-label="Facebook" target="_blank">
-            <i class="fa-brands fa-facebook" style="font-size: 20px;"></i>
-          </a>
-          <% } %>
+            <a href="<%= settings.socialLinks.instagram.url %>" class="social-btn" aria-label="Instagram"
+              target="_blank">
+              <i class="fa-brands fa-instagram" style="font-size: 20px;"></i>
+            </a>
+            <% } %>
+              <% if (settings.socialLinks?.youtube?.isActive) { %>
+                <a href="<%= settings.socialLinks.youtube.url %>" class="social-btn" aria-label="YouTube"
+                  target="_blank">
+                  <i class="fa-brands fa-youtube" style="font-size: 20px;"></i>
+                </a>
+                <% } %>
+                  <% if (settings.socialLinks?.tiktok?.isActive) { %>
+                    <a href="<%= settings.socialLinks.tiktok.url %>" class="social-btn" aria-label="TikTok"
+                      target="_blank">
+                      <i class="fa-brands fa-tiktok" style="font-size: 20px;"></i>
+                    </a>
+                    <% } %>
+                      <% if (settings.socialLinks?.facebook?.isActive) { %>
+                        <a href="<%= settings.socialLinks.facebook.url %>" class="social-btn" aria-label="Facebook"
+                          target="_blank">
+                          <i class="fa-brands fa-facebook" style="font-size: 20px;"></i>
+                        </a>
+                        <% } %>
         </div>
       </div>
 
@@ -36,21 +42,23 @@
       <div class="footer-col">
         <h4>Layanan</h4>
         <ul>
-          <% if (typeof serviceCategories !== 'undefined' && serviceCategories.length > 0) { %>
-            <% serviceCategories.forEach(cat => { %>
-              <li><a href="#"><%= cat %></a></li>
-            <% }); %>
-          <% } else { %>
-            <li><a href="#">Pembersihan Sepatu</a></li>
-            <li><a href="#">Cat Ulang Artistik</a></li>
-            <li><a href="#">Restorasi Tas</a></li>
-            <li><a href="#">Perawatan Helm</a></li>
-          <% } %>
+          <% if (typeof serviceCategories !=='undefined' && serviceCategories.length> 0) { %>
+            <% serviceCategories.forEach(cat=> { %>
+              <li><a href="#">
+                  <%= cat %>
+                </a></li>
+              <% }); %>
+                <% } else { %>
+                  <li><a href="#">Pembersihan Sepatu</a></li>
+                  <li><a href="#">Cat Ulang Artistik</a></li>
+                  <li><a href="#">Restorasi Tas</a></li>
+                  <li><a href="#">Perawatan Helm</a></li>
+                  <% } %>
         </ul>
       </div>
 
       <!-- Hubungi Kami Column -->
-       <div class="footer-col">
+      <div class="footer-col">
         <h4>Hubungi Kami</h4>
         <ul class="footer-contact">
           <li>
@@ -60,7 +68,9 @@
               </span>
               <div>
                 <span class="contact-label">WhatsApp</span>
-                <span class="contact-value"><%= settings.storeInfo.phone %></span>
+                <span class="contact-value">
+                  <%= settings.storeInfo.phone %>
+                </span>
               </div>
             </div>
           </li>
@@ -71,7 +81,9 @@
               </span>
               <div>
                 <span class="contact-label">Email</span>
-                <span class="contact-value"><%= settings.storeInfo.email %></span>
+                <span class="contact-value">
+                  <%= settings.storeInfo.email %>
+                </span>
               </div>
             </div>
           </li>
@@ -82,7 +94,9 @@
               </span>
               <div>
                 <span class="contact-label">Alamat Toko</span>
-                <span class="contact-value"><%= settings.storeInfo.name %></span>
+                <span class="contact-value">
+                  <%= settings.storeInfo.name %>
+                </span>
                 <span class="contact-sub-value" style="display: block; font-size: 11px; opacity: 0.7; margin-top: 2px;">
                   <%= settings.storeInfo.address %>
                 </span>
@@ -98,7 +112,9 @@
         <ul class="footer-hours">
           <li>
             <span class="hours-day">Setiap Hari</span>
-            <span class="hours-time"><%= settings.storeInfo.openTime %> – <%= settings.storeInfo.closeTime %></span>
+            <span class="hours-time">
+              <%= settings.storeInfo.openTime %> – <%= settings.storeInfo.closeTime %>
+            </span>
           </li>
         </ul>
       </div>
@@ -109,7 +125,7 @@
         <a href="#">Ketentuan</a>
         <a href="#">Keberlanjutan</a>
       </div>
-      <span>© 2024 GOEDE PRISTINE CARE. HAK CIPTA DILINDUNGI UNDANG-UNDANG.</span>
+      <span>© Adrian Yudhaswara, Muhammad Ziyad Fauzan, Ibrahim</span>
     </div>
   </div>
 </footer>
@@ -136,4 +152,5 @@
   }
 </script>
 </body>
+
 </html>
